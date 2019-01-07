@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/splashbackground1"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:paddingBottom="18dp"
+    android:paddingLeft="18dp"
+    android:paddingRight="18dp"
+    android:paddingTop="18dp"
+    tools:context="com.divinesecurity.safehouse.registerPackage.RegisterActivity">
+
+    <ImageView
+        android:layout_width="240dp"
+        android:layout_height="120dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="28dp"
+        android:contentDescription="@string/iv_logo"
+        android:src="@drawable/logo" />
+
+    <TextView
+        android:id="@+id/textView2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="YOUR SECURITY IS OUR PRIORITY"
+        android:textAlignment="center"
+        android:textColor="@android:color/white"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="5dp"/>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center_horizontal"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:orientation="horizontal">
+
+                <AutoCompleteTextView
+                    android:id="@+id/autocomplete_places"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@android:color/transparent"
+                    android:gravity="fill_vertical|center_horizontal"
+                    android:hint="City, country"
+                    android:maxLines="1"
+                    android:textColor="@android:color/white"
+                    android:textColorHint="#fff"
+                    android:textStyle="bold" />
+
+                <ImageButton
+                    android:id="@+id/imgBtn_mic"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:background="@android:color/transparent"
+                    android:src="@drawable/ic_mic_white_30dp"
+                    android:layout_alignParentEnd="true" />
+
+            </LinearLayout>
+
+            <RelativeLayout
+                android:id="@+id/rellayCompany"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:orientation="horizontal"
+                android:visibility="gone">
+
+                <Spinner
+                    android:id="@+id/spinnerCompany"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:gravity="fill_vertical|center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_drop_down"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+
+            <EditText
+                android:id="@+id/editCode"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="25dp"
+                android:background="@drawable/button_rounded_corner"
+                android:drawableLeft="@drawable/penciledit"
+                android:ems="10"
+                android:gravity="fill_vertical|center_horizontal"
+                android:hint="Code"
+                android:inputType="number"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textColorHint="#fff"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/penciledit" />
+
+            <EditText
+                android:id="@+id/editUser"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:drawableLeft="@drawable/ic_person_white_24dp"
+                android:ems="10"
+                android:gravity="fill_vertical|center_horizontal"
+                android:hint="Username"
+                android:inputType="textPersonName"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textColorHint="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_person_white_24dp" />
+
+            <EditText
+                android:id="@+id/editPassw"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:drawableLeft="@drawable/ic_lock_white_24dp"
+                android:ems="10"
+                android:gravity="fill_vertical|center_horizontal"
+                android:hint="Password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textColorHint="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_lock_white_24dp" />
+
+            <EditText
+                android:id="@+id/editStressPassw"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:drawableLeft="@drawable/ic_lock_white_24dp"
+                android:ems="10"
+                android:gravity="fill_vertical|center_horizontal"
+                android:hint="Stress Password"
+                android:inputType="textPassword"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textColorHint="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/ic_lock_white_24dp" />
+
+            <EditText
+                android:id="@+id/editEmail"
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:drawableLeft="@drawable/mail_white_symbol"
+                android:ems="10"
+                android:gravity="fill_vertical|center_horizontal"
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:maxLines="1"
+                android:textColor="@android:color/white"
+                android:textColorHint="#fff"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:drawableStart="@drawable/mail_white_symbol" />
+
+            <RelativeLayout
+                android:layout_width="260dp"
+                android:layout_height="50dp"
+                android:layout_marginTop="8dp"
+                android:background="@drawable/button_rounded_corner"
+                android:orientation="horizontal">
+
+                <Spinner
+                    android:id="@+id/spinnerRole"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@android:color/transparent"
+                    android:ems="10"
+                    android:gravity="fill_vertical|center_horizontal"
+                    android:spinnerMode="dropdown"
+                    android:textColor="@android:color/white"
+                    android:textSize="20sp"
+                    android:textStyle="bold" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_gravity="center"
+                    android:src="@mipmap/ic_drop_down"
+                    android:layout_alignParentEnd="true" />
+
+            </RelativeLayout>
+
+            <Button
+                style="@style/TextAppearance.AppCompat.Body1"
+                android:layout_width="260dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:background="@drawable/background_login"
+                android:clickable="true"
+                android:onClick="signup"
+                android:padding="16dp"
+                android:text="Sign Up"
+                android:textAllCaps="false"
+                android:textColor="@android:color/white"
+                android:textSize="24sp" />
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+
+</LinearLayout>
+

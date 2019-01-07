@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_payment"
+            android:icon="@drawable/payment"
+            android:title="Payments" />
+        <item
+            android:id="@+id/nav_zonelist"
+            android:icon="@drawable/numbered_list"
+            android:title="Zone List" />
+        <item
+            android:id="@+id/nav_invitation"
+            android:icon="@drawable/invitation"
+            android:title="Guest List" />
+        <item
+            android:id="@+id/nav_accounts"
+            android:icon="@drawable/exchange"
+            android:title="Accounts" />
+        <item
+            android:id="@+id/nav_setting"
+            android:icon="@drawable/ic_menu_manage"
+            android:title="Settings" />
+    </group>
+
+    <item android:title="Communicate">
+        <menu>
+            <item
+                android:id="@+id/nav_callus"
+                android:icon="@drawable/ic_callus"
+                android:title="Call us" />
+        </menu>
+    </item>
+
+</menu>

@@ -1,0 +1,59 @@
+<resources>
+    <string name="app_name">SafeHouse</string>
+    <string name="cellDS">+12685615170</string>
+    <string name="iv_logo">LOGO</string>
+    <string name="url">http://divinesecurityag.com/SafeHome/</string>
+    <string name="dsag_url">https://www.divinesecurityag.com/</string>
+    <string name="dsapp_url">http://divinesecurityapp.com/</string>
+    <string name="title_activity_main">Safe Home</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="action_settings">Settings</string>
+    <string name="historyevent">HISTORYEVENT</string>
+    <string name="history_event">Alarm History</string>
+    <string name="invoice">Invoice</string>
+    <string name="store">Store</string>
+    <string name="arm_dismar">Arm/Disarm Alarm</string>
+    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="tab_text_1">Paid Invoice</string>
+    <string name="tab_text_2">Card Info</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="invoice_no_list">Invoice No:</string>
+    <string name="date_list">Date:</string>
+    <string name="xcd__list">XCD</string>
+
+
+    <string name="class_prompt">Choose a Role</string>
+    <string name="class_prompt1">Choose an Account</string>
+
+    <string-array name="guest_role">
+        <item>Admin</item>
+        <item>Guest</item>
+    </string-array>
+
+    <!-- Alarm Vibration list -->
+    <string-array name="alert_vibrate_array">
+        <item>Off</item>
+        <item>Default</item>
+        <item>Short</item>
+        <item>Long</item>
+    </string-array>
+    <!-- Alarm Light list -->
+    <string-array name="alert_light_array">
+        <item>None</item>
+        <item>White</item>
+        <item>Red</item>
+        <item>Yellow</item>
+        <item>Green</item>
+        <item>Cyan</item>
+        <item>Blue</item>
+        <item>Purple</item>
+    </string-array>
+
+    <string name="alertVibra_default">Default</string>
+    <string name="alertLight_white">White</string>
+    <string name="aerSound_silent">Silent</string>
+</resources>
