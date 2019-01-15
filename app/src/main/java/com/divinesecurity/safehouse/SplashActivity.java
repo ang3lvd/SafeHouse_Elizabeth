@@ -16,7 +16,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        //SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
         //String username  = mypreference.getString("puser", "");
         //final String userstate = mypreference.getString("puserstatus", "");
 
