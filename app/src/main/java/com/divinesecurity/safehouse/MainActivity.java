@@ -1,36 +1,48 @@
 package com.divinesecurity.safehouse;
 
+import android.Manifest;
+import android.annotation.SuppressLint;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.IntentSender;
 import android.content.SharedPreferences;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
+import android.location.Address;
+import android.location.Geocoder;
+import android.location.Location;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
-import android.support.annotation.NonNull;
-import android.support.design.widget.NavigationView;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v4.view.GravityCompat;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.view.GestureDetector;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewTreeObserver;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBarDrawerToggle;
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.core.view.GravityCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.divinesecurity.safehouse.accountPackage.AccountsListActivity;
 import com.divinesecurity.safehouse.alarmPackage.EventListActivity;
@@ -41,16 +53,39 @@ import com.divinesecurity.safehouse.pdfPackage.TemplatePDF;
 import com.divinesecurity.safehouse.settingsPackage.SettingsActivity;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
 import com.divinesecurity.safehouse.zonePackage.ZoneListActivity;
+
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.common.api.PendingResult;
+import com.google.android.gms.common.api.Result;
+import com.google.android.gms.common.api.ResultCallback;
+import com.google.android.gms.common.api.Status;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.location.LocationServices;
+import com.google.android.gms.location.LocationSettingsRequest;
+import com.google.android.gms.location.LocationSettingsStatusCodes;
+
+import com.google.android.material.navigation.NavigationView;
 import com.nex3z.notificationbadge.NotificationBadge;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.lang.ref.WeakReference;
+import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, GoogleApiClient.ConnectionCallbacks, LocationListener, GoogleApiClient.OnConnectionFailedListener {
 
     NavigationView navigationView = null;
 
-            Animation animationZoom;
+    Animation animationZoom;
     NotificationBadge invnBadge, alarmnBadge;
 
     private String[] header = {"Item", "Quantity", "Description", "Rate", "SubTotal"};
@@ -63,6 +98,8 @@ public class MainActivity extends AppCompatActivity
     String iName, iAddress, iDate, iDueDate, iNo, iTotal;
     String urole, upanel;
 
+    String username, accnoSel;
+
     //Buy
     Animation animationIn, animationOut;
     LinearLayout layoutBuy, layoutBuyContent;
@@ -70,16 +107,21 @@ public class MainActivity extends AppCompatActivity
 
     ImageView imlogo;
 
-    private static Bitmap imageOriginal, imageScaled;
-    private static Matrix matrix;
+    CountDownTimer panicCountDown;
 
-    private int dialerHeight, dialerWidth;
+    private RelativeLayout layoutCount;
+    private TextView txtcounterSec, txtcounterMSec;
 
-    private GestureDetector detector;
-    // needed for detecting the inversed rotations
-    private boolean[] quadrantTouched;
-    private boolean allowRotating;
+    private Location mylocation;
+    private GoogleApiClient googleApiClient;
+    private final static int REQUEST_CHECK_SETTINGS_GPS = 0x1;
+    private final static int REQUEST_ID_MULTIPLE_PERMISSIONS = 0x2;
 
+    private String longitude = "0", latitude = "0", address = "";
+
+    ArrayList<String> accno, accList;
+
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -102,30 +144,74 @@ public class MainActivity extends AppCompatActivity
         alarmnBadge = findViewById(R.id.abadge);
 
         SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-        String invoiceBagde = mypreference.getString("pinvbadge", "");
-        String alarmBagde   = mypreference.getString("palarmbadge", "");
-        String username     = mypreference.getString("puser", "");
+        accnoSel            = mypreference.getString("paccountNo", "");
+        username            = mypreference.getString("puser", "");
         urole               = mypreference.getString("prole", "");
         upanel              = mypreference.getString("ppanel", "");
-        if (invoiceBagde.equals("")){
+        String invoiceBagde = mypreference.getString("pinvbadge", "");
+        String alarmBagde   = mypreference.getString("palarmbadge", "");
+        if (invoiceBagde != null && invoiceBagde.equals("")) {
             invoiceBagde = "0";
         }
-        invbdge = Integer.parseInt(invoiceBagde);
+        invbdge = Integer.parseInt(invoiceBagde != null ? invoiceBagde : "0");
         invnBadge.setNumber(invbdge);
 
-        if (alarmBagde.equals("")){
+        if (alarmBagde != null && alarmBagde.equals("")) {
             alarmBagde = "0";
         }
-        alarmbdge = Integer.parseInt(alarmBagde);
+        alarmbdge = Integer.parseInt(alarmBagde != null ? alarmBagde : "0");
         alarmnBadge.setNumber(alarmbdge);
 
+
         View hView =  navigationView.getHeaderView(0);
+
+        Spinner spnacc = hView.findViewById(R.id.spinner_AccountHeader);
+
+        accno = new ArrayList<>();
+        accList = new ArrayList<>();
+
+        accList.add(username);
+        accno.add(accnoSel);
+        LoadAcc();
+
+        ArrayAdapter<String> langAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.color_spinner_layout, accList);
+        langAdapter.setDropDownViewResource(R.layout.spinner_dropdown_layout);
+        spnacc.setAdapter(langAdapter);
+
+        if (accList.size() > 0) {
+            username = accList.get(0);
+            accnoSel = accno.get(0);
+        }
+
+
+        spnacc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                username = accList.get(position);
+                accnoSel = accno.get(position);
+
+                try{
+                    if(getSupportActionBar() != null)
+                        getSupportActionBar().setTitle(username != null ? username.toUpperCase() : "Client");
+                } catch (NullPointerException ex){
+                    ex.printStackTrace();
+                }
+
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
         TextView nav_user = hView.findViewById(R.id.txt_nav_name);
         nav_user.setText(username);
 
         try{
             if(getSupportActionBar() != null)
-                getSupportActionBar().setTitle(username.toUpperCase());
+                getSupportActionBar().setTitle(username != null ? username.toUpperCase() : "Client");
         } catch (NullPointerException ex){
             ex.printStackTrace();
         }
@@ -133,13 +219,13 @@ public class MainActivity extends AppCompatActivity
         layoutBuy        = findViewById(R.id.armdis_layoutBuy);
         layoutBuyContent = findViewById(R.id.armdis_layoutBuyContent);
 
+        layoutCount    = findViewById(R.id.emergency_layoutBuyCount);
+        txtcounterSec  = findViewById(R.id.panic_sec_textV);
+        txtcounterMSec = findViewById(R.id.panic_msec_textV);
 
         //
         animationIn  = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.left_in);
         animationOut = AnimationUtils.loadAnimation(getApplicationContext(), R.anim.right_out);
-
-        /*TextView txtname = findViewById(R.id.txt_nav_name);
-        txtname.setText(username);*/
 
         // create a instance of SQLite Database
         dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
@@ -150,56 +236,42 @@ public class MainActivity extends AppCompatActivity
         LocalBroadcastManager.getInstance(this).registerReceiver(mMessageReceiver,
                 new IntentFilter("broad-main"));
 
-
-
-
-        // load the image only once
-        if (imageOriginal == null) {
-            imageOriginal = BitmapFactory.decodeResource(getResources(), R.drawable.shieldlogo);
-        }
-
-        // initialize the matrix only once
-        if (matrix == null) {
-            matrix = new Matrix();
-        } else {
-            // not needed, you can also post the matrix immediately to restore the old state
-            matrix.reset();
-        }
-
-
-        detector = new GestureDetector(this, new MyGestureDetector());
-        // there is no 0th quadrant, to keep it simple the first value gets ignored
-        quadrantTouched = new boolean[] { false, false, false, false, false };
-
-        allowRotating = true;
-
         imlogo = findViewById(R.id.imgLogo);
-        imlogo.setOnTouchListener(new MyOnTouchListener());
-        imlogo.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        imlogo.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onGlobalLayout() {
-                // method called more than once, but the values only need to be initialized one time
-                if (dialerHeight == 0 || dialerWidth == 0) {
-                    dialerHeight = imlogo.getHeight();
-                    dialerWidth = imlogo.getWidth();
-
-                    // resize
-                    Matrix resize = new Matrix();
-                    resize.postScale((float)Math.min(dialerWidth, dialerHeight) / (float)imageOriginal.getWidth(), (float)Math.min(dialerWidth, dialerHeight) / (float)imageOriginal.getHeight());
-                    imageScaled = Bitmap.createBitmap(imageOriginal, 0, 0, imageOriginal.getWidth(), imageOriginal.getHeight(), resize, false);
-
-                    // translate to the image view's center
-                    float translateX = dialerWidth / 2 - imageScaled.getWidth() / 2;
-                    float translateY = dialerHeight / 2 - imageScaled.getHeight() / 2;
-                    matrix.postTranslate(translateX, translateY);
-
-                    imlogo.setImageBitmap(imageScaled);
-                    imlogo.setImageMatrix(matrix);
-
+            public boolean onTouch(View v, MotionEvent event) {
+                if(event.getAction() == MotionEvent.ACTION_DOWN){
+                    //button pressed
+                    layoutCount.setVisibility(View.VISIBLE);
+                    txtcounterSec.startAnimation(animationIn);
+                    txtcounterMSec.startAnimation(animationIn);
+                    getMyLocation();
+                    startCountDown();
                 }
+                if (event.getAction() == MotionEvent.ACTION_UP){
+                    //button relased
+                    panicCountDown.cancel();
+                    panicCountDown = null;
+                    txtcounterSec.startAnimation(animationOut);
+                    txtcounterMSec.startAnimation(animationOut);
+                    layoutCount.setVisibility(View.GONE);
+                }
+
+                return true;
             }
         });
 
+        setUpGClient();
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        if (googleApiClient!= null && googleApiClient.isConnected()) {
+            googleApiClient.stopAutoManage(this);
+            googleApiClient.disconnect();
+        }
     }
 
     @Override
@@ -212,6 +284,32 @@ public class MainActivity extends AppCompatActivity
         }
     }
 
+
+    @Override
+    public void onConnected(@Nullable Bundle bundle) {
+        checkPermissions();
+    }
+
+    @Override
+    public void onConnectionSuspended(int i) {
+
+    }
+
+    @Override
+    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+        Toast.makeText(getApplicationContext(), "conection failed", Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void onLocationChanged(Location location) {
+        mylocation = location;
+        if (mylocation != null) {
+            latitude = Double.toString(mylocation.getLatitude());
+            longitude = Double.toString(mylocation.getLongitude());
+            Toast.makeText(getApplicationContext(), "Current location: "+latitude+", "+longitude, Toast.LENGTH_SHORT).show();
+            //Or Do whatever you want with your location/
+        }
+    }
 
 
     public void store(View view) {
@@ -265,8 +363,10 @@ public class MainActivity extends AppCompatActivity
        startActivity(alarmListActivity);
     }
 
+
     public void nothing(View view) {
     }
+
 
     private void createPDF() {
         templatePDF = new TemplatePDF(getApplicationContext());
@@ -322,7 +422,6 @@ public class MainActivity extends AppCompatActivity
                 for (int i=0; i<itemArr.length; i++){
                     rows.add(new String[]{itemArr[i], qtyArr[i], descArr[i], rateArr[i], subTArr[i]});
                 }
-
             }
         }
         cursor.close();
@@ -358,10 +457,10 @@ public class MainActivity extends AppCompatActivity
                 SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mypreference.edit();
                 String alarmBagde = mypreference.getString("palarmbadge", "");
-                if (alarmBagde.equals("")) {
+                if (alarmBagde != null && alarmBagde.equals("")) {
                     alarmBagde = "0";
                 }
-                int bdge = Integer.parseInt(alarmBagde);
+                int bdge = Integer.parseInt(alarmBagde != null ? alarmBagde : "0");
                 bdge++;
                 editor.putString("palarmbadge", ""+bdge);
                 editor.apply();
@@ -370,10 +469,10 @@ public class MainActivity extends AppCompatActivity
                 SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mypreference.edit();
                 String invBagde = mypreference.getString("pinvbadge", "");
-                if (invBagde.equals("")) {
+                if (invBagde != null && invBagde.equals("")) {
                     invBagde = "0";
                 }
-                int bdge = Integer.parseInt(invBagde);
+                int bdge = Integer.parseInt(invBagde != null ? invBagde : "0");
                 bdge++;
                 editor.putString("pinvbadge", ""+bdge);
                 editor.apply();
@@ -381,7 +480,6 @@ public class MainActivity extends AppCompatActivity
             }
         }
     };
-
 
 
     @Override
@@ -398,7 +496,7 @@ public class MainActivity extends AppCompatActivity
         } else if (id == R.id.nav_zonelist) {
             startActivity(new Intent(this, ZoneListActivity.class));
         } else if (id == R.id.nav_invitation) {
-            if (urole.equals("Client") || urole.equals("Client")) {
+            if (urole.equals("Client") || urole.equals("Admin")) {
                 startActivity(new Intent(this, GuestListActivity.class));
             } else if (urole.equals("Guest")){
                 Toast.makeText(this, "This feature is only for client...", Toast.LENGTH_SHORT).show();
@@ -409,10 +507,11 @@ public class MainActivity extends AppCompatActivity
             startActivity(new Intent(this, SettingsActivity.class));
         } else if (id == R.id.nav_callus) {
             try {
-                /*if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
+                if(ActivityCompat.checkSelfPermission(this, android.Manifest.permission.CALL_PHONE) != PackageManager.PERMISSION_GRANTED){
                     Toast.makeText(this, "Permission to call denied", Toast.LENGTH_SHORT).show();
-                }*/
-                startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + getResources().getString(R.string.cellDS))));
+                } else {
+                    startActivity(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + getResources().getString(R.string.cellDS))));
+                }
             } catch (Exception e){
                 e.printStackTrace();
             }
@@ -424,137 +523,225 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    /**
-     * @return The angle of the unit circle with the image view's center
-     */
-    private double getAngle(double xTouch, double yTouch) {
-        double x = xTouch - (dialerWidth / 2d);
-        double y = dialerHeight - yTouch - (dialerHeight / 2d);
-
-        switch (getQuadrant(x, y)) {
-            case 1:
-                return Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            case 2:
-                return 180 - Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            case 3:
-                return 180 + (-1 * Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI);
-            case 4:
-                return 360 + Math.asin(y / Math.hypot(x, y)) * 180 / Math.PI;
-            default:
-                return 0;
-        }
+    private synchronized void setUpGClient() {
+        googleApiClient = new GoogleApiClient.Builder(getApplicationContext())
+                .enableAutoManage(MainActivity.this, 0, this)
+                .addConnectionCallbacks(this)
+                .addOnConnectionFailedListener(this)
+                .addApi(LocationServices.API)
+                .build();
+        googleApiClient.connect();
     }
 
-    /**
-     * @return The selected quadrant.
-     */
-    private int getQuadrant(double x, double y) {
-        if (x >= 0) {
-            return y >= 0 ? 1 : 4;
-        } else {
-            return y >= 0 ? 2 : 3;
-        }
-    }
+    void startCountDown(){
+        panicCountDown = new CountDownTimer(5000, 100) {
+            @Override
+            public void onTick(long millisUntilFinished) {
 
-    /**
-     * Rotate the dialer.
-     *
-     * @param degrees The degrees, the dialer should get rotated.
-     */
-    private void rotateDialer(float degrees) {
-        matrix.postRotate(degrees, dialerWidth / 2, dialerHeight / 2);
-
-        imlogo.setImageMatrix(matrix);
-    }
-
-    private class MyOnTouchListener implements View.OnTouchListener {
-
-        private double startAngle;
-
-        @Override
-        public boolean onTouch(View v, MotionEvent event) {
-
-            switch (event.getAction()) {
-                case MotionEvent.ACTION_DOWN:
-                    // reset the touched quadrants
-                    for (int i = 0; i < quadrantTouched.length; i++) {
-                        quadrantTouched[i] = false;
-                    }
-
-                    allowRotating = false;
-
-                    startAngle = getAngle(event.getX(), event.getY());
-                    break;
-
-                case MotionEvent.ACTION_MOVE:
-                    double currentAngle = getAngle(event.getX(), event.getY());
-                    rotateDialer((float) (startAngle - currentAngle));
-                    startAngle = currentAngle;
-                    break;
-
-                case MotionEvent.ACTION_UP:
-                    allowRotating = true;
-                    break;
+                int secs = (int) (millisUntilFinished / 1000);
+                int msecs = (int) (millisUntilFinished % 1000);
+                txtcounterSec.setText(String.format(Locale.getDefault(),"%02d", secs) + ":");
+                txtcounterMSec.setText(String.format(Locale.getDefault(), "%02d", msecs));
             }
 
-            // set the touched quadrant to true
-            quadrantTouched[getQuadrant(event.getX() - (dialerWidth / 2), dialerHeight - event.getY() - (dialerHeight / 2))] = true;
+            @Override
+            public void onFinish() {
+                txtcounterSec.startAnimation(animationOut);
+                txtcounterMSec.startAnimation(animationOut);
+                layoutCount.setVisibility(View.GONE);
 
-            detector.onTouchEvent(event);
+                Address();
 
-            return true;
+                String data = null;
+                try {
+                    data = URLEncoder.encode("la", "UTF-8") + "=" + URLEncoder.encode(latitude, "UTF-8") + "&" +
+                            URLEncoder.encode("lo", "UTF-8") + "=" + URLEncoder.encode(longitude, "UTF-8") + "&" +
+                            URLEncoder.encode("u", "UTF-8") + "=" + URLEncoder.encode(username, "UTF-8") + "&" +
+                            URLEncoder.encode("d", "UTF-8") + "=" + URLEncoder.encode(address, "UTF-8")  + "&" +
+                            URLEncoder.encode("a", "UTF-8") + "=" + URLEncoder.encode(accnoSel, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+                new SendEmergency(MainActivity.this).execute(getResources().getString(R.string.dssoft_url) + "SafeHome/eregistro.php?" + data);
+            }
+        }.start();
+    }
+
+    private void getMyLocation(){
+        if(googleApiClient!=null) {
+            if (googleApiClient.isConnected()) {
+                int permissionLocation = ContextCompat.checkSelfPermission(this,
+                        Manifest.permission.ACCESS_FINE_LOCATION);
+                if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                    mylocation = LocationServices.FusedLocationApi.getLastLocation(googleApiClient);
+                    LocationRequest locationRequest = new LocationRequest();
+                    locationRequest.setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+                    LocationSettingsRequest.Builder builder = new LocationSettingsRequest.Builder()
+                            .addLocationRequest(locationRequest);
+                    builder.setAlwaysShow(true);
+                    LocationServices.FusedLocationApi
+                            .requestLocationUpdates(googleApiClient, locationRequest, this);
+                    PendingResult result =
+                            LocationServices.SettingsApi
+                                    .checkLocationSettings(googleApiClient, builder.build());
+                    result.setResultCallback(new ResultCallback() {
+
+                        @Override
+                        public void onResult(@NonNull Result result) {
+                            final Status status = result.getStatus();
+                            switch (status.getStatusCode()) {
+                                case LocationSettingsStatusCodes.SUCCESS:
+                                    // All location settings are satisfied.
+                                    // You can initialize location requests here.
+                                    int permissionLocation = ContextCompat
+                                            .checkSelfPermission(getApplicationContext(),
+                                                    Manifest.permission.ACCESS_FINE_LOCATION);
+                                    if (permissionLocation == PackageManager.PERMISSION_GRANTED) {
+                                        mylocation = LocationServices.FusedLocationApi
+                                                .getLastLocation(googleApiClient);
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
+                                    // Location settings are not satisfied.
+                                    // But could be fixed by showing the user a dialog.
+                                    try {
+                                        // Show the dialog by calling startResolutionForResult(),
+                                        // and check the result in onActivityResult().
+                                        // Ask to turn on GPS automatically
+                                        status.startResolutionForResult(MainActivity.this,
+                                                REQUEST_CHECK_SETTINGS_GPS);
+                                    } catch (IntentSender.SendIntentException e) {
+                                        // Ignore the error.
+                                    }
+                                    break;
+                                case LocationSettingsStatusCodes.SETTINGS_CHANGE_UNAVAILABLE:
+                                    // Location settings are not satisfied. However, we have no way to fix the
+                                    // settings so we won't show the dialog.
+                                    //finish();
+                                    break;
+                            }
+                        }
+                    });
+                }
+            }
         }
     }
 
-    /**
-     * Simple implementation of a {link SimpleOnGestureListener} for detecting a fling event.
-     */
-    private class MyGestureDetector extends GestureDetector.SimpleOnGestureListener {
+    private void Address() {
+
+        List<Address> addresses;
+
+        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
+
+        String city = " ", state = " " ,  country = " ";
+        try {
+            if (mylocation != null) {
+                addresses = geocoder.getFromLocation(mylocation.getLatitude(), mylocation.getLongitude(), 1); // Here 1 represent max location result to returned, by documents it recommended 1 to 5
+
+                address = addresses.get(0).getAddressLine(0); // If any additional address line present than only, check with max available address lines by getMaxAddressLineIndex()
+                city = addresses.get(0).getLocality();
+                state = addresses.get(0).getAdminArea();
+                country = addresses.get(0).getCountryName();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally{
+            address = address + ", " + city + ", " + state + ", " + country;
+        }
+
+    }
+
+
+    private static class SendEmergency extends AsyncTask<String, Void, String> {
+        private WeakReference<MainActivity> weakReference;
+
+        SendEmergency(MainActivity context){ weakReference = new WeakReference<>(context); }
         @Override
-        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
-            // get the quadrant of the start and the end of the fling
-            int q1 = getQuadrant(e1.getX() - (dialerWidth / 2), dialerHeight - e1.getY() - (dialerHeight / 2));
-            int q2 = getQuadrant(e2.getX() - (dialerWidth / 2), dialerHeight - e2.getY() - (dialerHeight / 2));
-
-            // the inversed rotations
-            if ((q1 == 2 && q2 == 2 && Math.abs(velocityX) < Math.abs(velocityY))
-                    || (q1 == 3 && q2 == 3)
-                    || (q1 == 1 && q2 == 3)
-                    || (q1 == 4 && q2 == 4 && Math.abs(velocityX) > Math.abs(velocityY))
-                    || ((q1 == 2 && q2 == 3) || (q1 == 3 && q2 == 2))
-                    || ((q1 == 3 && q2 == 4) || (q1 == 4 && q2 == 3))
-                    || (q1 == 2 && q2 == 4 && quadrantTouched[3])
-                    || (q1 == 4 && q2 == 2 && quadrantTouched[3])) {
-
-                imlogo.post(new FlingRunnable(-1 * (velocityX + velocityY)));
+        protected String doInBackground(String... urls) {
+            try {
+                return Tools.downloadUrl(urls[0]);
+            } catch (IOException e) {
+                return "Unable to retrieve web page. URL may be invalid.";
+            }
+        }
+        @Override
+        protected void onPostExecute(String result) {
+            MainActivity activity = weakReference.get();
+            if(result.equals("Unable to retrieve web page. URL may be invalid.")){
+                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity.getApplicationContext())
+                        .setTitle("Connection Trouble")
+                        .setIcon(R.drawable.ic_cloud_off)
+                        .setMessage("Unable to connect to the server. Please try again.");
+                AlertDialog alertDialog = alertDialogBuilder.create();
+                alertDialog.show();
             } else {
-                // the normal rotation
-                imlogo.post(new FlingRunnable(velocityX + velocityY));
+                try {
+                    JSONObject jsonResult = new JSONObject(result);
+                    if (jsonResult.getBoolean("result")) {
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity)
+                                .setTitle("Emergency Atendida")
+                                .setIcon(R.drawable.ic_shield)
+                                .setMessage("Your emergency is been processed. Please be calm and wait for the help.");
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    } else {
+                        String cause = jsonResult.getString("case");
+                        AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(activity.getApplicationContext())
+                                .setTitle("Server Trouble")
+                                .setIcon(R.drawable.ic_warning)
+                                .setMessage("The server returned a mistake. Please try again.\r\nCause: " + cause);
+                        AlertDialog alertDialog = alertDialogBuilder.create();
+                        alertDialog.show();
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
             }
-            return true;
         }
     }
 
-    /**
-     * A {@link Runnable} for animating the the dialer's fling.
-     */
-    private class FlingRunnable implements Runnable {
-
-        private float velocity;
-
-        FlingRunnable(float velocity) {
-            this.velocity = velocity;
+    private void checkPermissions(){
+        int permissionLocation = ContextCompat.checkSelfPermission(this,
+                android.Manifest.permission.ACCESS_FINE_LOCATION);
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (permissionLocation != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(android.Manifest.permission.ACCESS_FINE_LOCATION);
+            if (!listPermissionsNeeded.isEmpty()) {
+                ActivityCompat.requestPermissions(this,
+                        listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), REQUEST_ID_MULTIPLE_PERMISSIONS);
+            }
+        }else{
+            getMyLocation();
         }
 
-        @Override
-        public void run() {
-            if (Math.abs(velocity) > 5  && allowRotating) {
-                rotateDialer(velocity / 75);
-                velocity /= 1.0666F;
+    }
 
-                // post this instance again
-                imlogo.post(this);
+
+
+    public void LoadAcc() {
+        Cursor cursor = null;
+        try {
+            MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
+            dataBaseAdapter = dataBaseAdapter.open();
+
+            cursor = dataBaseAdapter.getEntry_AllAcc_List();
+            int cant = cursor.getCount();
+
+            accList.clear();
+            accno.clear();
+
+            if (cant > 0) {
+                while (cursor.moveToNext()) { //move for columns
+                    //cursor.moveToFirst();
+                    accList.add(cursor.getString(cursor.getColumnIndex("ACCOUNTNAME")));
+                    accno.add(cursor.getString(cursor.getColumnIndex("ACCNO")));
+                }
             }
+            cursor.close();
+        } catch (Exception ex){
+            if (cursor != null)
+                cursor.close();
         }
     }
 

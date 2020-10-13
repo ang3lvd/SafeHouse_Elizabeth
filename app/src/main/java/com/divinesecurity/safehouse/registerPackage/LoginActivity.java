@@ -1,16 +1,18 @@
 package com.divinesecurity.safehouse.registerPackage;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.text.method.PasswordTransformationMethod;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.divinesecurity.safehouse.MainActivity;
 import com.divinesecurity.safehouse.R;
@@ -34,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     EditText etPass;
     boolean passwVisible = false;
 
+    @SuppressLint("ClickableViewAccessibility")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,7 +97,18 @@ public class LoginActivity extends AppCompatActivity {
 
     public void login(View view) {
 
-        if (userstate.equals("active")){
+        Intent nextActivity = new Intent(getApplicationContext(), MainActivity.class);
+        if(fromNotf.equals("true")){ //from notification
+            if (finalsecreen.equals("event")) {
+                nextActivity = new Intent(getApplicationContext(), EventListActivity.class);
+            } else if (finalsecreen.equals("invoice")){
+                nextActivity = new Intent(getApplicationContext(), InvoiceListActivity.class);
+            }
+        }
+        startActivity(nextActivity);
+        finish();
+
+        /*if (userstate.equals("active")){
             EditText etName = findViewById(R.id.txt_loginUsername);
 
 
@@ -113,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             new LoginActivity.tryLogin(this, data).execute(getResources().getString(R.string.url) + "applogin.php?"+data);
         } else {
             Toast.makeText(this, "There is no registered account. Please register first.", Toast.LENGTH_SHORT).show();
-        }
+        }*/
 
         //Delete all the information in database
         /*MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(this);

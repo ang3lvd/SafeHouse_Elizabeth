@@ -16,8 +16,8 @@ import com.divinesecurity.safehouse.R;
  */
 
 public class Settings_Adapter extends BaseAdapter {
-    private int mysIcons[];
-    private String mysActions[];
+    private int[] mysIcons;
+    private String[] mysActions;
     private LayoutInflater inflter;
 
     public Settings_Adapter(Context c, int[] icons, String[] actions){

@@ -20,34 +20,34 @@
         android:layout_gravity="center">
 
         <CheckBox
-            android:id="@+id/checkbox_High"
+            android:id="@+id/checkbox_Alarm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:checked="true"
             android:elegantTextHeight="false"
-            android:text="HIGH"
+            android:text="ALARM"
             android:textAllCaps="true"
             android:textColor="@color/red"
             android:textStyle="bold"
             android:theme="@style/MyCheckBoxHigh" />
 
         <CheckBox
-            android:id="@+id/checkbox_Medium"
+            android:id="@+id/checkbox_OpCl"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elegantTextHeight="false"
-            android:text="Medium"
+            android:text="Open/Close"
             android:textAllCaps="true"
             android:textColor="@android:color/holo_orange_dark"
             android:textStyle="bold"
             android:theme="@style/MyCheckBoxHigh" />
 
         <CheckBox
-            android:id="@+id/checkbox_Low"
+            android:id="@+id/checkbox_Event"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elegantTextHeight="false"
-            android:text="Medium"
+            android:text="Events"
             android:textAllCaps="true"
             android:textColor="@android:color/holo_blue_bright"
             android:textStyle="bold"
@@ -78,6 +78,5 @@
             android:layout_marginRight="5dp"
             android:text="Save" />
     </LinearLayout>
-
 
 </LinearLayout>

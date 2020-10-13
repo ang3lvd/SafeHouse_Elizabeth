@@ -2,7 +2,7 @@ package com.divinesecurity.safehouse.zonePackage;
 
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
@@ -23,7 +23,7 @@ public class ZoneListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_zone_list);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbaridZone);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbaridZone);
         setSupportActionBar(toolbar);
         //this line shows back button
         if(getSupportActionBar() != null)

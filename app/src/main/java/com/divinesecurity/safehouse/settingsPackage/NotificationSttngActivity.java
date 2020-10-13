@@ -11,14 +11,16 @@ import android.graphics.Color;
 import android.media.Ringtone;
 import android.media.RingtoneManager;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.app.NotificationCompat;
-import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.NotificationCompat;
 
 import com.divinesecurity.safehouse.R;
 
@@ -115,10 +117,17 @@ public class NotificationSttngActivity extends AppCompatActivity {
             NotificationCompat.Builder msgnotif = new NotificationCompat.Builder(this, "SH_CH_IDD");
             msgnotif.setAutoCancel(true)
                     .setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_siren_48))
-                    .setSmallIcon(R.drawable.shieldlogo48)
+                    //.setSmallIcon(R.drawable.shieldlogo48)
                     .setContentTitle("Test Alarm Setting")
                     .setContentText("Verify the notification seettings")
                     .setContentIntent(pendingIntent);
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                msgnotif.setSmallIcon(R.drawable.shieldlogo48);
+                msgnotif.setColor(getResources().getColor(R.color.red));
+            } else {
+                msgnotif.setSmallIcon(R.drawable.shieldlogo48);
+            }
 
             if (!notfSound.equals("silent")){
                 msgnotif.setSound(Uri.parse(notfSound));
@@ -190,6 +199,7 @@ public class NotificationSttngActivity extends AppCompatActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == PICK_RINGTONE_REQUEST) {
             if (resultCode == RESULT_OK) {
                 //Capturar el valor de la Uri
@@ -198,7 +208,7 @@ public class NotificationSttngActivity extends AppCompatActivity {
                 //Procesar la Uri
                 SharedPreferences.Editor editor = mypreferences.edit();
 
-                if (uri == null){
+                if (uri == null) {
                     alertSound.setText(R.string.aerSound_silent);
                     editor.putString("alertSound", "silent");
                 } else {

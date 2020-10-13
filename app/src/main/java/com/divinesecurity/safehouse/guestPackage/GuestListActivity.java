@@ -5,13 +5,14 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.AbsListView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
@@ -42,7 +43,7 @@ public class GuestListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_guest_list);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbarid_guest);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbarid_guest);
         setSupportActionBar(toolbar);
         //this line shows back button
         if (getSupportActionBar() != null)

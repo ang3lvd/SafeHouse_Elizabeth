@@ -1,7 +1,7 @@
 package com.divinesecurity.safehouse.pdfPackage;
 
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.divinesecurity.safehouse.R;
 import com.github.barteksc.pdfviewer.PDFView;

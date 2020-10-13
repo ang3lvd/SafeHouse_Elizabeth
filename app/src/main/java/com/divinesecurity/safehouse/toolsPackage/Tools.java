@@ -39,19 +39,33 @@ public class Tools {
 
         try {
             URL url = new URL(myurl);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000 /* milliseconds */);
-            conn.setConnectTimeout(15000 /* milliseconds */);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-            // Starts the query
-            conn.connect();
-            is = conn.getInputStream();
 
-            // Convert the InputStream into a string
-            //return readIt(is, len);
+            HttpURLConnection conn;
+            boolean redirected;
+            int ctdad_redirection = 0;
+            do {
+                conn = (HttpURLConnection) url.openConnection();
+                conn.setReadTimeout(10000 /* milliseconds */);
+                conn.setConnectTimeout(15000 /* milliseconds */);
+                conn.setRequestMethod("GET");
+                conn.setDoInput(true);
+                conn.setInstanceFollowRedirects(false);
+                // Starts the query
+                conn.connect();
+                is = conn.getInputStream();
+
+                // Convert the InputStream into a string
+                //return readIt(is, len);
+
+                int code = conn.getResponseCode();
+                redirected = code == 301 || code == 302; //|| code == HTTP_SEE_OTHER;
+                if (redirected) {
+                    url = new URL(conn.getHeaderField("Location"));
+                    conn.disconnect();
+                }
+            } while (redirected && ++ctdad_redirection < 2);
+
             return convertStreamtoString(is);
-
             // Makes sure that the InputStream is closed after the app is
             // finished using it.
         }catch (Exception e){

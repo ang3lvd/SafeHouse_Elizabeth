@@ -5,8 +5,11 @@ import android.content.ActivityNotFoundException;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 import android.widget.Toast;
+
+import androidx.core.content.FileProvider;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Document;
@@ -57,7 +60,7 @@ public class TemplatePDF {
     }
 
     private  void createFile(){
-        File folder = new File(Environment.getExternalStorageDirectory().toString(), "PDF");
+        File folder = new File(Environment.getExternalStorageDirectory() + File.separator + "PDF");
 
         if (!folder.exists())
             folder.mkdirs();
@@ -284,9 +287,18 @@ public class TemplatePDF {
 
     public void appViewPDF(Activity activity){
         if (pdfFile.exists()){
-            Uri uri = Uri.fromFile(pdfFile);
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setDataAndType(uri, "application/pdf");
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+            if(Build.VERSION.SDK_INT >=  Build.VERSION_CODES.N) {
+                Uri uri = FileProvider.getUriForFile(activity, activity.getPackageName() + ".provider", pdfFile);
+                intent.setDataAndType(uri, "application/pdf");
+                intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            } else {
+                Uri uri = Uri.fromFile(pdfFile);
+
+                intent.setDataAndType(uri, "application/pdf");
+            }
+            
             try{
                 activity.startActivity(intent);
             } catch (ActivityNotFoundException e){

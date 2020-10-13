@@ -63,6 +63,7 @@ public class MyDataBaseAdapter {
         return db;
     }
 
+
     //INSERT FUNCTIONS
     public void insertEntry_I(String accName, String accAddress, String invNo, String invDate, String invDueDate, String invItem, String invQty,
                               String invDesc, String invRate, String invSubtotal, String invTotal, String iAcc)
@@ -234,8 +235,6 @@ public class MyDataBaseAdapter {
         String selectM_query = "SELECT * FROM "+ I_TABLE_NAME + " ORDER BY IDI DESC LIMIT 1";
         return db.rawQuery(selectM_query, null);
     }
-
-
 
 
 

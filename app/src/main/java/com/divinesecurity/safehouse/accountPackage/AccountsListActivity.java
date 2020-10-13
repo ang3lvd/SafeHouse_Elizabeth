@@ -7,12 +7,6 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CollapsingToolbarLayout;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -25,10 +19,17 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
 import com.divinesecurity.safehouse.listViewAdapterPackage.Account_Adapter;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
+import com.google.android.material.appbar.AppBarLayout;
+import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -292,9 +293,6 @@ public class AccountsListActivity extends AppCompatActivity {
                 dialog.dismiss();
             }
         });
-
-
-
         dialog.show();
     }
 

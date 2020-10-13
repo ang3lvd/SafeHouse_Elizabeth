@@ -10,7 +10,6 @@ import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -23,6 +22,8 @@ import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
@@ -41,8 +42,8 @@ import java.util.ArrayList;
 public class SettingsActivity extends AppCompatActivity {
 
     ListView contList;
-    String actionList[] = {"Account", "Notifications", "Invitation", "About and help", "Events"};
-    int iconList[] = {R.mipmap.ic_account, R.drawable.ic_notifications, R.mipmap.ic_group, R.mipmap.ic_help, R.mipmap.ic_events};
+    String[] actionList = {"Account", "Notifications", "Invitation", "About and help", "Events"};
+    int[] iconList = {R.mipmap.ic_account, R.drawable.ic_notifications, R.mipmap.ic_group, R.mipmap.ic_help, R.mipmap.ic_events};
 
     Dialog dialog;
     String selectRole = "Guest", urole;
@@ -84,7 +85,8 @@ public class SettingsActivity extends AppCompatActivity {
                         }
                         break;
                     case "Events":
-                        showEventPayDialog();
+                        //showEventPayDialog();
+                        showDialogEvent();
                         break;
                     case "About and help":
                         Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://divinesecurityapp.com/privacy_policy.html"));
@@ -121,56 +123,29 @@ public class SettingsActivity extends AppCompatActivity {
 
     private void showDialogEvent() {
 
-        //SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+        //dialog window
+        final Dialog dialogEvent = new Dialog(this);
+        dialogEvent.setContentView(R.layout.dialog_event);
+        dialogEvent.setTitle("Set Notification");
+        // get the References of views
+        final CheckBox chkbAlarm = dialogEvent.findViewById(R.id.checkbox_Alarm);
+        final CheckBox chkbOpCl  = dialogEvent.findViewById(R.id.checkbox_OpCl);
+        final CheckBox chkbEvent = dialogEvent.findViewById(R.id.checkbox_Event);
+
+        SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
         //final String accno  = mypreference.getString("paccountNo", "");
         //final String addadmin  = mypreference.getString("padmin", "");
-
-        //dialog window
-        Dialog dialogEvent = new Dialog(this);
-        dialogEvent.setContentView(R.layout.dialog_event);
-        dialogEvent.setTitle("Set Invitation Code");
-        // get the References of views
-        final CheckBox chkbHigh    = dialogEvent.findViewById(R.id.checkbox_High);
-        final CheckBox chkbMedium  = dialogEvent.findViewById(R.id.checkbox_Medium);
-        final CheckBox chkbLow     = dialogEvent.findViewById(R.id.checkbox_Low);
-
-        final boolean[] chkarr = new boolean[3];
-        chkarr[0] = chkbHigh.isChecked();
-        chkarr[1] = chkbMedium.isChecked();
-        chkarr[2] = chkbLow.isChecked();
-
-        chkbHigh.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                chkarr[0] = chkbHigh.isChecked();
-            }
-        });
-
-        chkbMedium.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                chkarr[0] = chkbMedium.isChecked();
-            }
-        });
-
-        chkbLow.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view){
-                chkarr[0] = chkbLow.isChecked();
-            }
-        });
+        chkbAlarm.setChecked(mypreference.getString("evAlarm", "").equals("true"));
+        chkbOpCl.setChecked(mypreference.getString("evOpenClose", "").equals("true"));
+        chkbEvent.setChecked(mypreference.getString("evEvent", "").equals("true"));
 
         final Button btndefault = dialogEvent.findViewById(R.id.btndefaultPrioEvent);
         btndefault.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                chkbHigh.setChecked(true);
-                chkbMedium.setChecked(false);
-                chkbLow.setChecked(false);
-
-                chkarr[0] = chkbHigh.isChecked();
-                chkarr[1] = chkbMedium.isChecked();
-                chkarr[2] = chkbLow.isChecked();
+                chkbAlarm.setChecked(true);
+                chkbOpCl.setChecked(true);
+                chkbEvent.setChecked(false);
             }
         });
 
@@ -178,7 +153,16 @@ public class SettingsActivity extends AppCompatActivity {
         btnsave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(SettingsActivity.this, "saveing..", Toast.LENGTH_SHORT).show();
+                SharedPreferences mypreferences = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = mypreferences.edit();
+                editor.putString("evAlarm",     chkbAlarm.isChecked()? "true" : "false");
+                editor.putString("evOpenClose", chkbOpCl.isChecked()? "true" : "false");
+                editor.putString("evEvent",     chkbEvent.isChecked()? "true" : "false");
+                editor.apply();
+
+                dialogEvent.dismiss();
+
+                Toast.makeText(SettingsActivity.this, "saved..", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -372,9 +356,9 @@ public class SettingsActivity extends AppCompatActivity {
     }
 
     private static class UpdateCode extends AsyncTask<String, Void, String> {
-        private WeakReference<SettingsActivity> activityReference;
+        private WeakReference<SettingsActivity>
+ activityReference;
         String urlparameters;
-
         UpdateCode(SettingsActivity context, String postdata){
             this.activityReference = new WeakReference<>(context);
             this.urlparameters = postdata;

@@ -78,7 +78,8 @@
             android:text="Sign Up"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
-            android:textSize="24sp" />
+            android:textSize="24sp"
+            android:focusable="true" />
 
         </LinearLayout>
 

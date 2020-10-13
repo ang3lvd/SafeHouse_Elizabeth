@@ -10,17 +10,18 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.design.widget.AppBarLayout;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
 import com.divinesecurity.safehouse.listViewAdapterPackage.Alarm_Adapter;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
 import com.divinesecurity.safehouse.utils.CustomListView;
+import com.google.android.material.appbar.AppBarLayout;
 
 import java.util.ArrayList;
 
@@ -41,7 +42,7 @@ public class EventListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_event_list);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbaridEvent);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbaridEvent);
         setSupportActionBar(toolbar);
         //this line shows back button
         if(getSupportActionBar() != null){

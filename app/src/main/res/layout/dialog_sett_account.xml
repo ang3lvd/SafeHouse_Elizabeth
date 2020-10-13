@@ -29,20 +29,20 @@
         android:layout_marginTop="15dp"
         android:hint="Name" />
 
-    <android.support.design.widget.TextInputLayout
+    <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/etPasswordLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         app:passwordToggleEnabled="true">
 
-        <android.support.design.widget.TextInputEditText
+        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/etPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Current Password"
             android:inputType="textPassword" />
-    </android.support.design.widget.TextInputLayout>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -63,7 +63,7 @@
                 android:layout_gravity="center_vertical"
                 android:checked="false" />
 
-            <android.support.design.widget.TextInputEditText
+            <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etNewName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -83,21 +83,21 @@
                 android:layout_gravity="center_vertical"
                 android:checked="false" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etNewPasswordLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:passwordToggleEnabled="true">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="New Password"
                     android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
         <LinearLayout
@@ -112,21 +112,21 @@
                 android:layout_gravity="center_vertical"
                 android:checked="false" />
 
-            <android.support.design.widget.TextInputLayout
+            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/etNewSPasswordLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 app:passwordToggleEnabled="true">
 
-                <android.support.design.widget.TextInputEditText
+                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/etNewSPassword"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:enabled="false"
                     android:hint="New Stress Password"
                     android:inputType="textPassword" />
-            </android.support.design.widget.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
     </LinearLayout>

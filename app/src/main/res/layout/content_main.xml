@@ -13,13 +13,10 @@
         android:id="@+id/relativeLayout"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignLeft="@+id/rlLogo"
         android:layout_alignStart="@+id/rlLogo"
         android:layout_alignTop="@+id/rlLogo"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginRight="10dp"
         android:layout_marginStart="90dp"
         android:layout_marginTop="90dp"
         android:background="@drawable/shape_button"
@@ -55,9 +52,7 @@
             android:id="@+id/abadge"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_toRightOf="@+id/ll_alarmas"
             android:layout_alignTop="@+id/ll_alarmas"
-            android:layout_marginLeft="-16dp"
             android:layout_marginTop="-8dp"
             app:badgeBackground="@drawable/badge_bg_with_shadow"
             app:maxTextLength="2"
@@ -70,13 +65,10 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignEnd="@+id/rlLogo"
-        android:layout_alignRight="@+id/rlLogo"
         android:layout_alignTop="@+id/rlLogo"
         android:layout_marginBottom="10dp"
         android:layout_marginEnd="90dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="90dp"
-        android:layout_marginStart="10dp"
+       android:layout_marginStart="10dp"
         android:layout_marginTop="90dp"
         android:background="@drawable/shape_button"
         android:onClick="invoice">
@@ -111,9 +103,7 @@
             android:id="@+id/ibadge"
             android:layout_width="28dp"
             android:layout_height="28dp"
-            android:layout_toLeftOf="@+id/ll_invoices"
             android:layout_alignTop="@+id/ll_invoices"
-            android:layout_marginRight="-16dp"
             android:layout_marginTop="-8dp"
             app:badgeBackground="@drawable/badge_bg_with_shadow"
             app:maxTextLength="2"
@@ -126,12 +116,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/rlLogo"
-        android:layout_alignLeft="@+id/rlLogo"
         android:layout_alignStart="@+id/rlLogo"
         android:layout_marginBottom="90dp"
         android:layout_marginEnd="10dp"
-        android:layout_marginLeft="90dp"
-        android:layout_marginRight="10dp"
         android:layout_marginStart="90dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/shape_button"
@@ -168,11 +155,8 @@
         android:layout_height="match_parent"
         android:layout_alignBottom="@+id/rlLogo"
         android:layout_alignEnd="@+id/rlLogo"
-        android:layout_alignRight="@+id/rlLogo"
         android:layout_marginBottom="90dp"
         android:layout_marginEnd="90dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginRight="90dp"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
         android:background="@drawable/shape_button"
@@ -221,17 +205,15 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_rounded_logo"
-            android:scaleType="matrix"
-            android:src="@drawable/shieldlogo"/>
+            android:scaleType="centerInside"
+            android:src="@drawable/shieldlogo" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_separator1"
         android:layout_width="70dp"
         android:layout_height="10dp"
-        android:layout_alignRight="@+id/rl_invoice"
         android:layout_centerVertical="true"
-        android:layout_marginRight="76dp"
         android:background="@android:color/white"
         android:layout_marginEnd="76dp"
         android:layout_alignEnd="@+id/rl_invoice">
@@ -240,13 +222,11 @@
 
     <RelativeLayout
         android:id="@+id/rl_separator2"
-        android:layout_width="70dp"
-        android:layout_height="10dp"
-        android:layout_alignLeft="@+id/relativeLayout"
+        android:layout_width="73dp"
+        android:layout_height="30dp"
         android:layout_alignStart="@+id/relativeLayout"
         android:layout_centerVertical="true"
-        android:layout_marginLeft="76dp"
-        android:layout_marginStart="76dp"
+        android:layout_marginStart="55dp"
         android:background="@android:color/white">
 
     </RelativeLayout>
@@ -337,5 +317,48 @@
         </LinearLayout>
 
     </LinearLayout>
+
+    <RelativeLayout
+        android:id="@+id/emergency_layoutBuyCount"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignBottom="@+id/rlLogo"
+        android:layout_alignParentTop="true"
+        android:layout_marginBottom="170dp"
+        android:alpha="0.9"
+        android:background="#E03434"
+        android:gravity="center"
+        android:onClick="lay_armdis"
+        android:visibility="gone">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/panic_sec_textV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ledfont"
+                android:text="00:"
+                android:textColor="@color/white"
+                android:textSize="98dip"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/panic_msec_textV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/ledfont"
+                android:text="00"
+                android:textColor="@color/white"
+                android:textSize="72dip" />
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
 
 </RelativeLayout>

@@ -79,7 +79,7 @@ public class Spinner_Adapter extends BaseAdapter {
 
         t1.setText(companies.get(i));
         if (!companies.get(i).equals("-select company-")) {
-            Picasso.with(context).load("http://divinesecurityapp.com/resources/images/profiles/companies/"+ images.get(i))
+            Picasso.with(context).load("https://divinesecurityapp.com/resources/images/profiles/companies/"+ images.get(i))
                     .fit().centerCrop()
                     .placeholder(R.drawable.spinner_progress_animation)
                     .error(R.drawable.icons8_shield_64)
@@ -108,7 +108,7 @@ public class Spinner_Adapter extends BaseAdapter {
 
         t1.setText(companies.get(position));
         if (!companies.get(position).equals("-select company-")) {
-            Picasso.with(context).load("http://divinesecurityapp.com/resources/images/profiles/companies/"+ images.get(position))
+            Picasso.with(context).load("https://divinesecurityapp.com/resources/images/profiles/companies/"+ images.get(position))
                     .fit().centerCrop()
                     .placeholder(R.drawable.spinner_progress_animation)
                     .error(R.drawable.icons8_shield_64)

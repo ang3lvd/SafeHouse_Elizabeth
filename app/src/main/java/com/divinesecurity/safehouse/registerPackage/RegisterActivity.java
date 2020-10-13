@@ -8,15 +8,12 @@ import android.media.RingtoneManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
-import android.support.annotation.NonNull;
-import android.support.v7.app.AppCompatActivity;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.RelativeLayout;
@@ -24,22 +21,21 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.divinesecurity.safehouse.MainActivity;
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
 import com.divinesecurity.safehouse.listViewAdapterPackage.Spinner_Adapter;
-import com.divinesecurity.safehouse.toolsPackage.PlaceAutocompleteAdapter;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
-import com.google.android.gms.location.places.AutocompletePrediction;
-import com.google.android.gms.location.places.GeoDataClient;
-import com.google.android.gms.location.places.Place;
-import com.google.android.gms.location.places.PlaceBufferResponse;
-import com.google.android.gms.location.places.Places;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.RuntimeRemoteException;
+import com.google.android.gms.common.api.Status;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.libraries.places.api.Places;
+import com.google.android.libraries.places.api.model.Place;
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment;
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener;
 import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
@@ -53,7 +49,9 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
+import java.util.Objects;
 
 public class RegisterActivity extends AppCompatActivity {
 
@@ -63,21 +61,11 @@ public class RegisterActivity extends AppCompatActivity {
     String code, uname, upassw, uspassw, uemail, urole, ucountry, ucompany;
     String mToken = "";
 
-
-    //
-    private static final LatLngBounds BOUNDS_GREATER_CARIBBEAN = new LatLngBounds(
-            new LatLng(11.465197, -65.557008), new LatLng(18.422921, -57.553065));
-    protected GeoDataClient mGeoDataClient;
-    private PlaceAutocompleteAdapter mAdapter;
-    private AutoCompleteTextView mAutocompleteView;
-
     RelativeLayout rellayCom;
 
     ImageButton mSpeakBtn;
 
     private static final int REQ_CODE_SPEECH_INPUT = 100;
-
-    boolean clearbtn = false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,50 +174,59 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        // Setup Places Client
+        if (!Places.isInitialized()) {
+            Places.initialize(getApplicationContext(), getString(R.string.map_key));
+        }
+        setupAutocompleteSupportFragment();
 
-        // Construct a GeoDataClient for the Google Places API for Android.
-        mGeoDataClient = Places.getGeoDataClient(this, null);
-        // Retrieve the AutoCompleteTextView that will display Place suggestions.
-        mAutocompleteView = findViewById(R.id.autocomplete_places);
-        // Register a listener that receives callbacks when a suggestion has been selected
-        mAutocompleteView.setOnItemClickListener(mAutocompleteClickListener);
-        // Set up the adapter that will retrieve suggestions from the Places Geo Data Client.
-        mAdapter = new PlaceAutocompleteAdapter(this, mGeoDataClient, BOUNDS_GREATER_CARIBBEAN, null);
-        mAutocompleteView.setAdapter(mAdapter);
-
-        mAutocompleteView.addTextChangedListener(new TextWatcher() {
-            @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-            }
-
-            @Override
-            public void afterTextChanged(Editable editable) {
-                clearbtn = editable.length() > 0;
-                if(clearbtn) {  //swap to clear drawable
-                    mSpeakBtn.setImageResource(R.drawable.ic_clear_white_24dp);
-                }
-                else  //swap to mic drawable
-                    mSpeakBtn.setImageResource(R.drawable.ic_mic_white_30dp);
-            }
-        });
-
-        mSpeakBtn.setOnClickListener(new View.OnClickListener() {
+       mSpeakBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (clearbtn) {
-                    mAutocompleteView.setText("");
-                    mAutocompleteView.setTextSize(20f);
-                }
-                else
-                    startVoiceInput();
+                startVoiceInput();
             }
         });
+    }
+
+    private void setupAutocompleteSupportFragment() {
+        // Initialize the AutocompleteSupportFragment.
+        final AutocompleteSupportFragment autocompleteFragment =
+                (AutocompleteSupportFragment)
+                        getSupportFragmentManager().findFragmentById(R.id.autocomplete_fragment);
+        // Specify the types of place data to return.
+        Objects.requireNonNull(autocompleteFragment).setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME, Place.Field.ADDRESS));
+
+        autocompleteFragment.setOnPlaceSelectedListener(getPlaceSelectionListener());
+    }
+
+    private PlaceSelectionListener getPlaceSelectionListener() {
+        return new PlaceSelectionListener() {
+            @Override
+            public void onPlaceSelected(@NonNull Place place) {
+                String[] placeList = Objects.requireNonNull(place.getAddress()).split(",");
+                ucountry = placeList[placeList.length - 1];
+
+                Toast.makeText(getApplicationContext(), "Clicked: " + placeList[0],
+                        Toast.LENGTH_SHORT).show();
+
+                String data = null;
+                try {
+                    data = URLEncoder.encode("c","UTF-8") + "=" + URLEncoder.encode(ucountry, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    e.printStackTrace();
+                }
+
+                closeKeyboard();
+
+                rellayCom.setVisibility(View.VISIBLE);
+                new Companies_List(RegisterActivity.this).execute(getResources().getString(R.string.dsapp_url) + "divsecapp/companies_list_app.php?"+ data);
+            }
+
+            @Override
+            public void onError(@NonNull Status status) {
+                Toast.makeText(RegisterActivity.this, status.getStatusMessage(), Toast.LENGTH_SHORT).show();
+            }
+        };
     }
 
     public void signup(View view) {
@@ -278,31 +275,6 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
 
-    private boolean checkFields() {
-        boolean flag = true;
-        if(txtcode.getText().toString().length() < 4){
-            txtcode.setError("Code is requiered!");
-            flag = false;
-        }else if(txtusern.getText().toString().length() < 2){
-            txtusern.setError("Name is requiered!");
-            flag = false;
-        }else if(txtpassw.getText().toString().length() < 4){
-            txtpassw.setError("Password is requiered!");
-            flag = false;
-        }/*else if((txtspassw.getVisibility() == View.VISIBLE) && (txtspassw.getText().toString().length() < 4)){
-            txtspassw.setError("Stress Password is requiered!");
-            flag = false;
-        }*/else if (!Tools.validarEmail(txtemail.getText().toString())){
-            txtemail.setError("Email is requiered!");
-            flag = false;
-        } else if (txtpassw.getText().toString().equals(txtspassw.getText().toString())){
-            txtspassw.setError("Stress Password couldn't be equal to Password");
-            flag = false;
-        }
-        return flag;
-    }
-
-
     private static class UserRegister extends AsyncTask<String, Void, String> {
         private WeakReference<RegisterActivity> activityReference;
         String urlparameters;
@@ -314,7 +286,6 @@ public class RegisterActivity extends AppCompatActivity {
 
         @Override
         protected String doInBackground(String... urls) {
-
             // params comes from the execute() call: params[0] is the url.
             try {
                 return Tools.downloadUrl(urls[0]);
@@ -365,6 +336,10 @@ public class RegisterActivity extends AppCompatActivity {
                     editor.putString("pscreen", "none");
 
                     editor.putString("lock_state", "none");
+
+                    editor.putString("evAlarm", "true");
+                    editor.putString("evOpenClose", "true");
+                    editor.putString("evEvent", "true");
                     editor.apply();
 
                     MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(activity.getApplicationContext());
@@ -385,9 +360,10 @@ public class RegisterActivity extends AppCompatActivity {
                     startActivity(mainActivity);
                     finish();*/
 
-                    Toast.makeText(activity.getApplicationContext(), "Register successful!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(activity.getApplicationContext(), "Registration successful!", Toast.LENGTH_LONG).show();
 
-                } else {
+                }
+                else {
                     if (jsonResult.getBoolean("codefaild")) {
                         activity.txtcode.setError("Code wrong!");
                     } else {
@@ -401,6 +377,29 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
+    private boolean checkFields() {
+        boolean flag = true;
+        if(txtcode.getText().toString().length() < 4){
+            txtcode.setError("Code is requiered!");
+            flag = false;
+        }else if(txtusern.getText().toString().length() < 2){
+            txtusern.setError("Name is requiered!");
+            flag = false;
+        }else if(txtpassw.getText().toString().length() < 4){
+            txtpassw.setError("Password is requiered!");
+            flag = false;
+        }/*else if((txtspassw.getVisibility() == View.VISIBLE) && (txtspassw.getText().toString().length() < 4)){
+            txtspassw.setError("Stress Password is requiered!");
+            flag = false;
+        }*/else if (!Tools.validarEmail(txtemail.getText().toString())){
+            txtemail.setError("Email is requiered!");
+            flag = false;
+        } else if (txtpassw.getText().toString().equals(txtspassw.getText().toString())){
+            txtspassw.setError("Stress Password couldn't be equal to Password");
+            flag = false;
+        }
+        return flag;
+    }
 
     private static class getZoneInfo extends AsyncTask<String, Void, String> {
         private WeakReference<RegisterActivity> activityReference;
@@ -463,92 +462,17 @@ public class RegisterActivity extends AppCompatActivity {
         }
     }
 
-
-
     private void startVoiceInput() {
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, Locale.getDefault());
-        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, How can I help you?");
+        intent.putExtra(RecognizerIntent.EXTRA_PROMPT, "Hello, Pronunce?");
         try {
             startActivityForResult(intent, REQ_CODE_SPEECH_INPUT);
         } catch (ActivityNotFoundException ignored) {
 
         }
     }
-
-
-    /**
-     * Listener that handles selections from suggestions from the AutoCompleteTextView that
-     * displays Place suggestions.
-     * Gets the place id of the selected item and issues a request to the Places Geo Data Client
-     * to retrieve more details about the place.
-     *
-     * @see GeoDataClient#getPlaceById(String...)
-     */
-    private AdapterView.OnItemClickListener mAutocompleteClickListener
-            = new AdapterView.OnItemClickListener() {
-        @Override
-        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
-            /* Retrieve the place ID of the selected item from the Adapter.
-             The adapter stores each Place suggestion in a AutocompletePrediction from which we
-             read the place ID and title. */
-            final AutocompletePrediction item = mAdapter.getItem(position);
-            final String placeId = item != null ? item.getPlaceId() : null;
-            final CharSequence primaryText = item != null ? item.getPrimaryText(null) : null;
-
-            /* Issue a request to the Places Geo Data Client to retrieve a Place object with
-             additional details about the place. */
-            Task<PlaceBufferResponse> placeResult = mGeoDataClient.getPlaceById(placeId);
-            placeResult.addOnCompleteListener(mUpdatePlaceDetailsCallback);
-
-            mAutocompleteView.setTextSize(14f);
-
-            Toast.makeText(getApplicationContext(), "Clicked: " + primaryText,
-                    Toast.LENGTH_SHORT).show();
-
-            closeKeyboard();
-        }
-    };
-
-
-    /**
-     * Callback for results from a Places Geo Data Client query that shows the first place result in
-     * the details view on screen.
-     */
-    private OnCompleteListener<PlaceBufferResponse> mUpdatePlaceDetailsCallback
-            = new OnCompleteListener<PlaceBufferResponse>() {
-        @Override
-        public void onComplete(Task<PlaceBufferResponse> task) {
-            try {
-                PlaceBufferResponse places = task.getResult();
-
-                // Get the Place object from the buffer.
-                final Place place = places != null ? places.get(0) : null;
-
-                String[] placeList = place != null ? place.getAddress().toString().split(",") : new String[0];
-                ucountry = placeList[placeList.length - 1];
-
-                String data = null;
-                try {
-                    data = URLEncoder.encode("c","UTF-8") + "=" + URLEncoder.encode(ucountry, "UTF-8");
-                } catch (UnsupportedEncodingException e) {
-                    e.printStackTrace();
-                }
-
-                rellayCom.setVisibility(View.VISIBLE);
-                new Companies_List(RegisterActivity.this).execute(getResources().getString(R.string.dsapp_url) + "divsecapp/companies_list_app.php?"+ data);
-
-                if (places != null) {
-                    places.release();
-                }
-
-            } catch (RuntimeRemoteException e) {
-                // Request did not complete successfully
-            }
-        }
-    };
 
     private void closeKeyboard(){
         View view = this.getCurrentFocus();
@@ -592,7 +516,6 @@ public class RegisterActivity extends AppCompatActivity {
                     ArrayList<String> logoList = new ArrayList<>();
                     ArrayList<String> stateList = new ArrayList<>();
 
-                    companyList.clear();
                     companyList.clear();
                     stateList.clear();
 

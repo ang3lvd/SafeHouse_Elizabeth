@@ -8,11 +8,12 @@ import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.support.v4.content.LocalBroadcastManager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Toast;
+
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
@@ -62,7 +63,7 @@ public class InvoiceListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_invoice_list);
 
-        android.support.v7.widget.Toolbar toolbar = findViewById(R.id.toolbaridInvoice);
+        androidx.appcompat.widget.Toolbar toolbar = findViewById(R.id.toolbaridInvoice);
         setSupportActionBar(toolbar);
         //this line shows back button
         if(getSupportActionBar() != null)
@@ -196,26 +197,25 @@ public class InvoiceListActivity extends AppCompatActivity {
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == PAYPAL_REQUEST_CODE){
-            if (resultCode == RESULT_OK){
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == PAYPAL_REQUEST_CODE) {
+            if (resultCode == RESULT_OK) {
                 PaymentConfirmation confirmation = data.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
-                if (confirmation != null){
+                if (confirmation != null) {
                     try {
                         String paymentDetails = confirmation.toJSONObject().toString(4);
                         startActivity(new Intent(this, PayPalPaymentDetails.class)
                                 .putExtra("PaymentDetails", paymentDetails)
                                 .putExtra("PaymentAmount", payamount)
                         );
-                    } catch (JSONException e){
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
 
                 }
-            }
-            else if (resultCode == Activity.RESULT_CANCELED){
+            } else if (resultCode == Activity.RESULT_CANCELED) {
                 Toast.makeText(this, "Cancel", Toast.LENGTH_SHORT).show();
-            }
-            else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID){
+            } else if (resultCode == PaymentActivity.RESULT_EXTRAS_INVALID) {
                 Toast.makeText(this, "Invalid", Toast.LENGTH_SHORT).show();
             }
         }

@@ -2,7 +2,6 @@ package com.divinesecurity.safehouse.listViewAdapterPackage;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,6 +11,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+
+import androidx.annotation.NonNull;
 
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.invoicePackage.InvoiceDataModel;
@@ -74,7 +75,7 @@ public class Invoice_Adapter extends ArrayAdapter<InvoiceDataModel> {
             viewHolder.btnpay      = convertView.findViewById(R.id.inv_pay);
             viewHolder.rl_inv_item = convertView.findViewById(R.id.rl_invoice_item);
 
-            viewHolder.inv_account   = convertView.findViewById(R.id.zone_account);
+            viewHolder.inv_account   = convertView.findViewById(R.id.inv_account);
 
             viewHolder.btnpay.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -4,8 +4,14 @@
     <string name="iv_logo">LOGO</string>
     <string name="url">http://divinesecurityag.com/SafeHome/</string>
     <string name="dsag_url">https://www.divinesecurityag.com/</string>
-    <string name="dsapp_url">http://divinesecurityapp.com/</string>
+    <string name="dsapp_url">http://www.divinesecurityapp.com/</string>
+    <string name="dssoft_url">http://divinesecuritysoftware.com/</string>
     <string name="title_activity_main">Safe Home</string>
+
+
+    <!--     FOLDERs   -->
+    <string name="MEDIA_INVENTORY_PDF">SafeHouse/Media/Inventory/PDF</string>
+    <string name="TEMPORAL_PDF_NAME">TemplatePDF.pdf</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -16,7 +22,7 @@
     <string name="invoice">Invoice</string>
     <string name="store">Store</string>
     <string name="arm_dismar">Arm/Disarm Alarm</string>
-    <string name="title_activity_payment">PaymentActivity</string>
+    <string name="title_activity_payment">Payment</string>
     <string name="tab_text_1">Paid Invoice</string>
     <string name="tab_text_2">Card Info</string>
 
@@ -56,4 +62,6 @@
     <string name="alertVibra_default">Default</string>
     <string name="alertLight_white">White</string>
     <string name="aerSound_silent">Silent</string>
+
+    <string name="map_key">AIzaSyCpntODPb0ItZz_E8mkIDbw5RCoPYzaYzo</string>
 </resources>

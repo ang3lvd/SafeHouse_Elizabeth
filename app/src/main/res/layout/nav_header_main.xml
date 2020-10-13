@@ -30,6 +30,13 @@
         android:id="@+id/txt_nav_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="android.studio@android.com" />
+        android:text="android.studio@android.com"
+        android:visibility="gone" />
+
+    <Spinner
+        android:id="@+id/spinner_AccountHeader"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:spinnerMode="dropdown" />
 
 </LinearLayout>
