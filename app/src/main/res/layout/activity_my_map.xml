@@ -116,7 +116,7 @@
             map:uiTiltGestures="true"
             map:uiZoomControls="true"
             map:uiZoomGestures="true"
-            tools:context="com.divinesecurityag.app1.MyMapsActivity"/>
+            tools:context="com.divinesecurity.safehouse.MyMapsActivity"/>
 
     </LinearLayout>
 

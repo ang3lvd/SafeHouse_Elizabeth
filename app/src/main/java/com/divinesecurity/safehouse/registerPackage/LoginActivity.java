@@ -105,10 +105,10 @@ public class LoginActivity extends AppCompatActivity {
                 nextActivity = new Intent(getApplicationContext(), InvoiceListActivity.class);
             }
         }
-        startActivity(nextActivity);
-        finish();
+        //startActivity(nextActivity);
+        //finish();
 
-        /*if (userstate.equals("active")){
+        if (userstate.equals("active")){
             EditText etName = findViewById(R.id.txt_loginUsername);
 
 
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
             new LoginActivity.tryLogin(this, data).execute(getResources().getString(R.string.url) + "applogin.php?"+data);
         } else {
             Toast.makeText(this, "There is no registered account. Please register first.", Toast.LENGTH_SHORT).show();
-        }*/
+        }
 
         //Delete all the information in database
         /*MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(this);

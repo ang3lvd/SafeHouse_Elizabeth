@@ -3,10 +3,10 @@ apply plugin: 'com.android.application'
 android {
     signingConfigs {
         config {
-            storeFile file('D:\\divinesecurity\\SafeHouse\\Keys\\safehouse_keystore.jks')
-            storePassword 'divsecapp'
-            keyAlias = 'safehome'
-            keyPassword 'ang3lvd89'
+            storeFile file('D:\\divinesecurity\\SafeHouse\\Keys\\safehouse-keystore.jks')
+            storePassword 'DivineSecurity1'
+            keyAlias = 'safehouse-alias'
+            keyPassword 'DivineSecurity1'
         }
     }
     compileSdkVersion 28
@@ -14,8 +14,8 @@ android {
         applicationId "com.divinesecurity.safehouse"
         minSdkVersion 20
         targetSdkVersion 28
-        versionCode 12
-        versionName "1.3.3"
+        versionCode 13
+        versionName "1.3.4"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         multiDexEnabled true
     }
