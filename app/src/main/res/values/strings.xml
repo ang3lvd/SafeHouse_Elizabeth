@@ -20,7 +20,7 @@
     <string name="historyevent">HISTORYEVENT</string>
     <string name="history_event">Alarm History</string>
     <string name="invoice">Invoice</string>
-    <string name="store">Store</string>
+    <string name="emergency_event">Emergency History</string>
     <string name="arm_dismar">Arm/Disarm Alarm</string>
     <string name="title_activity_payment">Payment</string>
     <string name="tab_text_1">Paid Invoice</string>
@@ -63,6 +63,7 @@
     <string name="alertLight_white">White</string>
     <string name="aerSound_silent">Silent</string>
 
-    <string name="map_key">AIzaSyAZj_FD7Df86iEiYuTt5zQEywKbSTqhlgg</string>
-        <!--AIzaSyCpntODPb0ItZz_E8mkIDbw5RCoPYzaYzo-->
+    <string name="map_key">AIzaSyCpntODPb0ItZz_E8mkIDbw5RCoPYzaYzo</string>
+    <!--AIzaSyCpntODPb0ItZz_E8mkIDbw5RCoPYzaYzo--> <!--debug-->
+    <!--AIzaSyAZj_FD7Df86iEiYuTt5zQEywKbSTqhlgg--> <!--release-->
 </resources>

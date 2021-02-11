@@ -17,6 +17,7 @@ public class MyDataBaseAdapter {
     static final String Z_TABLE_NAME = "ZONES";
     static final String G_TABLE_NAME = "GUESTS";
     static final String ACC_TABLE_NAME = "ACCOUNTS";
+    static final String E_TABLE_NAME = "EMERGENCIES";
 
     // TODO: Create public field for each column in your table.
     // SQL Statement to create a new database.
@@ -31,6 +32,8 @@ public class MyDataBaseAdapter {
             "(IDG integer primary key autoincrement, GUESTNAME text not null, GUESTROLE text, ACCOUNTNAME text);";
     static final String DATABASE_CREATE_ACC = "create table "+ACC_TABLE_NAME+
             "(IDACC integer primary key autoincrement, ACCOUNTNAME text not null, PASSW text, SPASSW text, ROLE text, EMAIL text, ACCNO text, ISADMIN text);";
+    static final String DATABASE_CREATE_E = "create table "+E_TABLE_NAME+
+            "(IDE integer primary key autoincrement, ENAME text, ESTATUS integer, EDATE text, EADDRESS text, ELATITUDE text, ELONGITUDE text, EGROUP text);";
 
     // Variable to hold the database instance
     public SQLiteDatabase db;
@@ -141,6 +144,22 @@ public class MyDataBaseAdapter {
         db.insert(ACC_TABLE_NAME, null, newValues);
     }
 
+    public void insertEntry_E(String eName, String eStatus, String eDate, String eAddress, String eLatitude, String eLongitude, String egroup)
+    {
+        ContentValues newValues = new ContentValues();
+        // Assign values for each row.
+        newValues.put("ENAME", eName);
+        newValues.put("ESTATUS",eStatus);
+        newValues.put("EDATE",eDate);
+        newValues.put("EADDRESS",eAddress);
+        newValues.put("ELATITUDE", eLatitude);
+        newValues.put("ELONGITUDE",eLongitude);
+        newValues.put("EGROUP", egroup);
+
+        // Insert the row into your table
+        long a = db.insert(E_TABLE_NAME, null, newValues);
+        int y = 10;
+    }
 
     //DELET FUNCTIONS
     public void deleteEntry(String table, String entry)
@@ -214,6 +233,11 @@ public class MyDataBaseAdapter {
         return db.query(G_TABLE_NAME,  new String[]{"IDG", "GUESTNAME", "GUESTROLE", "ACCOUNTNAME"}, null, null, null, null, null);
     }
 
+    public Cursor getEntry_E_List()
+    {
+        return db.query(E_TABLE_NAME,  new String[]{"ENAME", "ESTATUS", "EDATE", "EADDRESS", "ELATITUDE", "ELONGITUDE", "EGROUP", "IDE"}, null, null, "ENAME", null, "IDE DESC");
+    }
+
     public Cursor getEntry_I(String invNo)
     {
         return db.query(I_TABLE_NAME, new String[]{"ACCNAME", "ACCADDRESS", "INVNO", "INVDATE", "INVDUEDATE", "INVITEM", "INVQTY", "INVDESC", "INVRATE", "INVSUBTOTAL", "INVTOTAL"}, " INVNO=?", new String[]{invNo}, null, null, null);
@@ -236,6 +260,28 @@ public class MyDataBaseAdapter {
         return db.rawQuery(selectM_query, null);
     }
 
+    public int getLastEmergencyID(){
+        //(tareas) cambiar el rawquery para query
+        String selectM_query = "SELECT IDE FROM "+ E_TABLE_NAME + " ORDER BY IDE DESC LIMIT 1";
+        Cursor cursor =  db.rawQuery(selectM_query, null);
+        int cant = cursor.getCount();
 
+        int eid = -1;
+        if (cant > 0) {
+            while (cursor.moveToNext()) { //move for columns
+                eid = cursor.getInt(cursor.getColumnIndex("IDE"));
+            }
+        }
+        //int eid = (cant > 0) ? cursor.getInt(cursor.getColumnIndex("IDE")) : -1;
+        cursor.close();
+
+        return eid;
+    }
+
+    public void setEmergencyStatus(int id, boolean estatus){
+        ContentValues cv = new ContentValues();
+        cv.put("ESTATUS",estatus ? "1":"0");
+        db.update(E_TABLE_NAME, cv, "IDE=?", new String[]{""+id});
+    }
 
 }

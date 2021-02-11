@@ -17,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.divinesecurity.safehouse.MainActivity;
 import com.divinesecurity.safehouse.R;
 import com.divinesecurity.safehouse.alarmPackage.EventListActivity;
+import com.divinesecurity.safehouse.emergencyPackage.EmergencyListActivity;
 import com.divinesecurity.safehouse.invoicePackage.InvoiceListActivity;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
 
@@ -96,18 +97,6 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     public void login(View view) {
-
-        Intent nextActivity = new Intent(getApplicationContext(), MainActivity.class);
-        if(fromNotf.equals("true")){ //from notification
-            if (finalsecreen.equals("event")) {
-                nextActivity = new Intent(getApplicationContext(), EventListActivity.class);
-            } else if (finalsecreen.equals("invoice")){
-                nextActivity = new Intent(getApplicationContext(), InvoiceListActivity.class);
-            }
-        }
-        //startActivity(nextActivity);
-        //finish();
-
         if (userstate.equals("active")){
             EditText etName = findViewById(R.id.txt_loginUsername);
 
@@ -124,7 +113,7 @@ public class LoginActivity extends AppCompatActivity {
             } catch (UnsupportedEncodingException e) {
                 e.printStackTrace();
             }
-            new LoginActivity.tryLogin(this, data).execute(getResources().getString(R.string.url) + "applogin.php?"+data);
+            new LoginActivity.tryLogin(this, data).execute(getResources().getString(R.string.dssoft_url) + "giams/includes/SafeHome/applogin.php?"+data);
         } else {
             Toast.makeText(this, "There is no registered account. Please register first.", Toast.LENGTH_SHORT).show();
         }
@@ -187,10 +176,12 @@ public class LoginActivity extends AppCompatActivity {
 
                     Intent nextActivity = new Intent(activity.getApplicationContext(), MainActivity.class);
                     if(activity.fromNotf.equals("true")){ //from notification
-                        if (activity.finalsecreen.equals("event")) {
+                        if (activity.finalsecreen.equals("eventscreen")) {
                             nextActivity = new Intent(activity.getApplicationContext(), EventListActivity.class);
-                        } else if (activity.finalsecreen.equals("invoice")){
+                        } else if (activity.finalsecreen.equals("invoicescreen")){
                             nextActivity = new Intent(activity.getApplicationContext(), InvoiceListActivity.class);
+                        } else if (activity.finalsecreen.equals("emergencyscreen")){
+                            nextActivity = new Intent(activity.getApplicationContext(), EmergencyListActivity.class);
                         }
                     }
                     activity.startActivity(nextActivity);

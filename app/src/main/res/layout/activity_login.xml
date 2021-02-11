@@ -19,7 +19,7 @@
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="28dp"
         android:contentDescription="@string/iv_logo"
-        android:src="@drawable/logo" />
+        android:src="@drawable/shieldlogo" />
 
     <TextView
         android:id="@+id/textView2"

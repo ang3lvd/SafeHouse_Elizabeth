@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     package="com.divinesecurity.safehouse"
     android:installLocation="preferExternal">
 
@@ -15,7 +14,6 @@
     <uses-permission android:name="android.permission.READ_INTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -24,11 +22,12 @@
         android:allowBackup="true"
         android:icon="@drawable/shieldlogo"
         android:label="@string/app_name"
-        android:networkSecurityConfig="@xml/network_security_config"
         android:largeHeap="true"
+        android:networkSecurityConfig="@xml/network_security_config"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -37,7 +36,7 @@
             android:grantUriPermissions="true">
             <meta-data
                 android:name="android.support.FILE_PROVIDER_PATHS"
-                android:resource="@xml/provider_paths"/>
+                android:resource="@xml/provider_paths" />
         </provider>
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -114,6 +113,10 @@
             android:name=".alarmPackage.EventListActivity"
             android:parentActivityName=".MainActivity"
             android:theme="@style/OrangeAppTheme" />
+        <activity android:name=".emergencyPackage.EmergencyListActivity"
+            android:label="Emergencies"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/BlueAppTheme"/>
         <activity
             android:name=".zonePackage.ZoneListActivity"
             android:parentActivityName=".MainActivity"
@@ -125,12 +128,12 @@
             android:theme="@style/Theme.AppCompat.Light.NoActionBar" />
         <activity
             android:name=".settingsPackage.SettingsActivity"
-            android:parentActivityName=".MainActivity"
-            android:label="Settings"/>
+            android:label="Settings"
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".settingsPackage.NotificationSttngActivity"
-            android:parentActivityName=".settingsPackage.SettingsActivity"
-            android:label="Notification Settings"/>
+            android:label="Notification Settings"
+            android:parentActivityName=".settingsPackage.SettingsActivity" />
         <activity
             android:name=".accountPackage.AccountsListActivity"
             android:parentActivityName=".MainActivity"

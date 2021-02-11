@@ -12,6 +12,7 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 
+import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
@@ -24,6 +25,10 @@ import com.divinesecurity.safehouse.toolsPackage.Tools;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
 
+import java.text.DateFormat;
+import java.util.Date;
+import java.util.Objects;
+
 public class MyFirebaseMessagingService extends FirebaseMessagingService {
     public MyFirebaseMessagingService() {
     }
@@ -35,12 +40,13 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     String info_title, notflength;
     String iName, iAddress, iNo, iDate, iDueDate, iItem, iQty, iDesc, iRate, iSubTotal, iTotal;
     String guestName, guestRole;
-    String contName = "unknow", clientLong, clientLat, clientDir, group;
+    String contName = "unknow", eLong, eLat, eAddr, group, eDate;
+    int eId = -1;
 
     String CHANNEL_ID = "my_channel_02";// The id of the channel.
 
     @Override
-    public void onMessageReceived(RemoteMessage remoteMessage) {
+    public void onMessageReceived(@NonNull RemoteMessage remoteMessage) {
         super.onMessageReceived(remoteMessage);
 
         tipo = remoteMessage.getData().get("tipo");
@@ -59,17 +65,17 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
 
                 SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                 boolean[] typeArr = new boolean[]{true, true, false};
-                typeArr[0] = mypreference.getString("evAlarm", "").equals("true");
-                typeArr[1] = mypreference.getString("evOpenClose", "").equals("true");
-                typeArr[2] = mypreference.getString("evEvent", "").equals("true");
+                typeArr[0] = Objects.equals(mypreference.getString("evAlarm", ""), "true");
+                typeArr[1] = Objects.equals(mypreference.getString("evOpenClose", ""), "true");
+                typeArr[2] = Objects.equals(mypreference.getString("evEvent", ""), "true");
 
                 if((alarmDesc.equals("alarm") && typeArr[0]) || ((alarmDesc.equals("open") || alarmDesc.equals("close")) && typeArr[1]) || ((!alarmDesc.equals("alarm") && !alarmDesc.equals("open") && !alarmDesc.equals("close")) && typeArr[2])){
                     String screen_active = Tools.getScreen_active();
                     saveMsgDB();
                     switch (screen_active) {
-                        case "none":
+                        /*case "none":
                             ShowNotification(alarmMessage);
-                            break;
+                            break;*/
                         case "mainscreen": {
                             Intent intent = new Intent("broad-main");
                             intent.putExtra("pType", "alarm");
@@ -107,9 +113,6 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 String screen_active = Tools.getScreen_active();
                 saveInvoiceDB();
                 switch (screen_active) {
-                    case "none":
-                        ShowNotification(alarmMessage);
-                        break;
                     case "mainscreen": {
                         Intent intent = new Intent("broad-main");
                         intent.putExtra("pType", "invoice");
@@ -121,6 +124,14 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                         LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
                         break;
                     }
+                    case "emergencyscreen": {
+                        Intent intent = new Intent("broad-emergency");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        break;
+                    }
+                    default:
+                        ShowNotification(alarmMessage);
+                        break;
                 }
                 break;
             }
@@ -149,13 +160,37 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 break;
             }
             case "emergency": {
-                clientLong = remoteMessage.getData().get("longitud");
-                clientLat = remoteMessage.getData().get("latitud");
-                clientDir = remoteMessage.getData().get("direccion");
+                alarmMessage = "Contact " + contName + " has a problem";
+
+                //eDate = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(new Date());
+                eDate = DateFormat.getDateTimeInstance().format(new Date());
+                eLong = remoteMessage.getData().get("longitud");
+                eLat = remoteMessage.getData().get("latitud");
+                eAddr = remoteMessage.getData().get("direccion");
                 contName = remoteMessage.getData().get("user");
                 group = remoteMessage.getData().get("group");
 
-                ShowNotification("Contact " + contName + " has a problem");
+                saveEmergencyDB();
+                eId = getLastEmergencyId();
+
+                String screen_active = Tools.getScreen_active();
+                switch (screen_active) {
+                    case "mainscreen": {
+                        Intent intent = new Intent("broad-main");
+                        intent.putExtra("pType", "emergency");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        break;
+                    }
+                    case "emergencyscreen": {
+                        Intent intent = new Intent("broad-emergency");
+                        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+                        break;
+                    }
+                    default:
+                        ShowNotification(alarmMessage);
+                        break;
+                }
+
                 break;
             }
         }
@@ -182,6 +217,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mypreference.edit();
                 String alarmBagde = mypreference.getString("palarmbadge", "");
+                assert alarmBagde != null;
                 if (alarmBagde.equals("")) {
                     alarmBagde = "0";
                 }
@@ -201,6 +237,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                 SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = mypreference.edit();
                 String invoiceBagde = mypreference.getString("pinvbadge", "");
+                assert invoiceBagde != null;
                 if (invoiceBagde.equals("")) {
                     invoiceBagde = "0";
                 }
@@ -217,10 +254,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             case "emergency": {
                 notifIntent = new Intent(this, MyMapActivity.class);
                 notifIntent.putExtra("contName", contName);
-                notifIntent.putExtra("contLat", clientLat);
-                notifIntent.putExtra("contLong", clientLong);
-                notifIntent.putExtra("contDir", clientDir);
+                notifIntent.putExtra("contLat", eLat);
+                notifIntent.putExtra("contLong", eLong);
+                notifIntent.putExtra("contDir", eAddr);
                 notifIntent.putExtra("group", group);
+                notifIntent.putExtra("eId", eId);
                 notifIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
 
                 notif_title = "NEW EMERGENCY EVENT!!!";
@@ -253,9 +291,11 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
             notificationBuilder.setSmallIcon(R.drawable.shieldlogo48);
         }
 
+        assert notfSound != null;
         if (!notfSound.equals("silent")){
             notificationBuilder.setSound(Uri.parse(notfSound));
         }
+        assert notfVibra != null;
         if (!notfVibra.equals("Off")){
             switch (notfVibra) {
                 case "Default":
@@ -269,6 +309,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
                     break;
             }
         }
+        assert notfLight != null;
         if (!notfLight.equals("None")){
             switch (notfVibra) {
                 case "White":
@@ -333,7 +374,18 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
         MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
         dataBaseAdapter = dataBaseAdapter.open();
         dataBaseAdapter.insertEntry_I(iName, iAddress, iNo, iDate, iDueDate, iItem, iQty, iDesc, iRate, iSubTotal, iTotal, iName);
+    }
 
+    private void saveEmergencyDB(){
+        MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
+        dataBaseAdapter = dataBaseAdapter.open();
+        dataBaseAdapter.insertEntry_E(contName, "0", eDate, eAddr, eLong, eLat, group);
+    }
+
+    private int getLastEmergencyId() {
+        MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
+        dataBaseAdapter = dataBaseAdapter.open();
+        return dataBaseAdapter.getLastEmergencyID();
     }
 
     private void saveMsgDB(){
@@ -388,7 +440,7 @@ public class MyFirebaseMessagingService extends FirebaseMessagingService {
     }
 
     @Override
-    public void onNewToken(String s) {
+    public void onNewToken(@NonNull String s) {
         super.onNewToken(s);
         //Toast.makeText(this, "token: " + s, Toast.LENGTH_SHORT).show();
         SharedPreferences mypreferences = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);

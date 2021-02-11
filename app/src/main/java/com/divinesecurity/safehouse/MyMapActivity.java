@@ -7,6 +7,7 @@ import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -21,6 +22,7 @@ import java.util.Locale;
 public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     String contname, latitude, longitude, address = "", dateE = "undefined", group, urole;
+    int emergId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,6 +45,8 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
             address   = beforeActivity.getStringExtra("contDir");
             group     = beforeActivity.getStringExtra("group");
 
+            emergId   = beforeActivity.getIntExtra("eId", -1);
+
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd 'at' HH:mm:ss", Locale.getDefault());
             dateE = sdf.format(new Date());
 
@@ -51,6 +55,8 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         }
 
         drawMap();
+
+        setEmergencyStatus();
     }
 
 
@@ -68,7 +74,7 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
     @Override
     public void onMapReady(GoogleMap googleMap) {
         // Add a marker in Sydney, Australia, and move the camera.
-        LatLng markpoint = new LatLng(Double.valueOf(latitude), Double.valueOf(longitude));
+        LatLng markpoint = new LatLng(Double.parseDouble(latitude), Double.parseDouble(longitude));
         googleMap.addMarker(new MarkerOptions().position(markpoint).title(contname));
         googleMap.moveCamera(CameraUpdateFactory.newLatLng(markpoint));
         googleMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
@@ -88,6 +94,12 @@ public class MyMapActivity extends AppCompatActivity implements OnMapReadyCallba
         } else if (urole.equals("Guest")){
             icidentTitle.setText("The member " + contname + " of your group has an incident arround the map. \r\nOn " + dateE );
         }
+    }
+
+    private void setEmergencyStatus() {
+        MyDataBaseAdapter dataBaseAdapter = new MyDataBaseAdapter(getApplicationContext());
+        dataBaseAdapter = dataBaseAdapter.open();
+        dataBaseAdapter.setEmergencyStatus(emergId, false);
     }
 }
 

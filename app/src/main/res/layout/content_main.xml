@@ -15,10 +15,10 @@
         android:layout_height="match_parent"
         android:layout_alignStart="@+id/rlLogo"
         android:layout_alignTop="@+id/rlLogo"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="10dp"
         android:layout_marginStart="90dp"
         android:layout_marginTop="90dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/shape_button"
         android:onClick="event_history">
 
@@ -53,23 +53,23 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_alignTop="@+id/ll_alarmas"
+            android:layout_marginStart="-16dp"
             android:layout_marginTop="-8dp"
-            app:badgeBackground="@drawable/badge_bg_with_shadow"
-            app:maxTextLength="2"
             android:layout_toEndOf="@+id/ll_alarmas"
-            android:layout_marginStart="-16dp" />
+            app:badgeBackground="@drawable/badge_bg_with_shadow"
+            app:maxTextLength="2" />
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_invoice"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignEnd="@+id/rlLogo"
         android:layout_alignTop="@+id/rlLogo"
-        android:layout_marginBottom="10dp"
-        android:layout_marginEnd="90dp"
-       android:layout_marginStart="10dp"
+        android:layout_alignEnd="@+id/rlLogo"
+        android:layout_marginStart="10dp"
         android:layout_marginTop="90dp"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="10dp"
         android:background="@drawable/shape_button"
         android:onClick="invoice">
 
@@ -105,26 +105,27 @@
             android:layout_height="28dp"
             android:layout_alignTop="@+id/ll_invoices"
             android:layout_marginTop="-8dp"
-            app:badgeBackground="@drawable/badge_bg_with_shadow"
-            app:maxTextLength="2"
+            android:layout_marginEnd="-16dp"
             android:layout_toStartOf="@+id/ll_invoices"
-            android:layout_marginEnd="-16dp" />
+            app:badgeBackground="@drawable/badge_bg_with_shadow"
+            app:maxTextLength="2" />
     </RelativeLayout>
 
     <RelativeLayout
-        android:id="@+id/rl_store"
+        android:id="@+id/rl_emergency"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/rlLogo"
         android:layout_alignStart="@+id/rlLogo"
-        android:layout_marginBottom="90dp"
-        android:layout_marginEnd="10dp"
+        android:layout_alignBottom="@+id/rlLogo"
         android:layout_marginStart="90dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="90dp"
         android:background="@drawable/shape_button"
-        android:onClick="store">
+        android:onClick="emergency">
 
         <LinearLayout
+            android:id="@+id/ll_emergencies"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -135,30 +136,41 @@
                 android:id="@+id/imgStore"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
-                android:contentDescription="@string/store"
-                app:srcCompat="@drawable/ic_store" />
+                android:contentDescription="@string/emergency_event"
+                app:srcCompat="@drawable/ic_alarm_24" />
 
             <TextView
                 android:id="@+id/textStore"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="@string/store"
+                android:text="@string/emergency_event"
                 android:textAlignment="center"
                 android:textSize="18sp"
                 android:textStyle="bold" />
 
         </LinearLayout>
+
+        <com.nex3z.notificationbadge.NotificationBadge
+            android:id="@+id/ebadge"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_alignTop="@+id/ll_emergencies"
+            android:layout_marginTop="-8dp"
+            android:layout_marginEnd="-16dp"
+            android:layout_toStartOf="@+id/ll_emergencies"
+            app:badgeBackground="@drawable/badge_bg_with_shadow"
+            app:maxTextLength="2" />
     </RelativeLayout>
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_alignBottom="@+id/rlLogo"
         android:layout_alignEnd="@+id/rlLogo"
-        android:layout_marginBottom="90dp"
-        android:layout_marginEnd="90dp"
+        android:layout_alignBottom="@+id/rlLogo"
         android:layout_marginStart="10dp"
         android:layout_marginTop="10dp"
+        android:layout_marginEnd="90dp"
+        android:layout_marginBottom="90dp"
         android:background="@drawable/shape_button"
         android:onClick="arm_disarm">
 
@@ -196,27 +208,38 @@
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="true"
         android:background="@drawable/shape_button_mask"
+        android:onClick="nothing"
         android:padding="10dp"
-        android:soundEffectsEnabled="false"
-        android:onClick="nothing">
+        android:soundEffectsEnabled="false">
 
-        <ImageView
+        <!--<ImageView
             android:id="@+id/imgLogo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/button_rounded_logo"
-            android:scaleType="centerInside"
-            android:src="@drawable/shieldlogo" />
+            android:src="@drawable/shieldlogo"/> -->
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imgLogo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/shieldlogo"
+            app:civ_border_color="#d5daea"
+            app:civ_border_width="2dp"
+            app:civ_circle_background_color="@android:color/holo_blue_dark" />
+
+
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_separator1"
         android:layout_width="70dp"
-        android:layout_height="10dp"
+        android:layout_height="30dp"
+        android:layout_alignEnd="@+id/rl_invoice"
         android:layout_centerVertical="true"
-        android:background="@android:color/white"
-        android:layout_marginEnd="76dp"
-        android:layout_alignEnd="@+id/rl_invoice">
+        android:layout_marginEnd="55dp"
+        android:background="@android:color/white">
 
     </RelativeLayout>
 
@@ -233,25 +256,25 @@
 
     <RelativeLayout
         android:id="@+id/rl_separator3"
-        android:layout_width="10dp"
+        android:layout_width="30dp"
         android:layout_height="60dp"
-        android:layout_alignBottom="@+id/rl_store"
+        android:layout_alignBottom="@+id/rl_emergency"
         android:layout_centerHorizontal="true"
-        android:layout_marginBottom="76dp"
+        android:layout_marginBottom="55dp"
         android:background="@android:color/white">
 
     </RelativeLayout>
 
     <RelativeLayout
         android:id="@+id/rl_separator4"
-        android:layout_width="10dp"
+        android:layout_width="30dp"
         android:layout_height="60dp"
+        android:layout_alignTop="@+id/rl_invoice"
         android:layout_alignParentEnd="false"
         android:layout_alignParentRight="false"
-        android:layout_alignTop="@+id/rl_invoice"
         android:layout_centerHorizontal="true"
         android:layout_centerVertical="false"
-        android:layout_marginTop="76dp"
+        android:layout_marginTop="55dp"
         android:background="@android:color/white">
 
     </RelativeLayout>
@@ -275,44 +298,22 @@
             android:alpha="1"
             android:background="@color/white"
             android:onClick="lay_armdis"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/imageView3"
+                android:layout_width="150dp"
+                android:layout_height="110dp"
+                app:srcCompat="@drawable/ic_svg_coming_soon_48" />
+
+            <TextView
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:id="@+id/imageView3"
-                    android:layout_width="150dp"
-                    android:layout_height="110dp"
-                    app:srcCompat="@drawable/bridge" />
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="3dp"
-                    android:layout_marginLeft="3dp">
-
-                    <TextView
-                        android:id="@+id/txtpanelparagragh"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:text="For use this feature please buy a IR34 panel from: "
-                        android:textStyle="bold"/>
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/txtpanelparagragh"
-                        android:text="Divine Security"
-                        android:textColor="@android:color/holo_blue_dark"
-                        android:onClick="shoplink"
-                        android:textStyle="bold"/>
-                </RelativeLayout>
-
-            </LinearLayout>
+                android:layout_gravity="center_vertical"
+                android:text="This feature is comming soon!!!"
+                android:textColor="@android:color/holo_blue_dark"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
         </LinearLayout>
 

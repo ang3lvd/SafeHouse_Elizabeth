@@ -7,9 +7,12 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -38,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.lang.ref.WeakReference;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.List;
 
 public class SettingsActivity extends AppCompatActivity {
 
@@ -169,6 +173,8 @@ public class SettingsActivity extends AppCompatActivity {
         dialogEvent.show();
     }
 
+    Button btnSetCode;
+    String uid;
     private void showDialogCode() {
 
         SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
@@ -178,18 +184,215 @@ public class SettingsActivity extends AppCompatActivity {
         //dialog window
         dialog = new Dialog(this);
         dialog.setContentView(R.layout.dialog_guestcode);
-        dialog.setTitle("Set Invitation Code");
+        dialog.setTitle("Create New Account");
+
         // get the References of views
         final Spinner spnacc = dialog.findViewById(R.id.spinner_Account);
-        final com.bachors.prefixinput.EditText txtcode  = dialog.findViewById(R.id.txtGuestCode);
+        //final com.bachors.prefixinput.EditText txtcode  = dialog.findViewById(R.id.txtGuestCode);
         final Spinner spnnrole = dialog.findViewById(R.id.spinner_Role);
-        final Button btnSetCode = dialog.findViewById(R.id.btnsetCode);
+        btnSetCode = dialog.findViewById(R.id.btnsetCode);
+
+        final TextView tv_code = dialog.findViewById(R.id.tv_code);
+        final EditText et_code1 = dialog.findViewById(R.id.et_code1);
+        final EditText et_code2 = dialog.findViewById(R.id.et_code2);
+        final EditText et_code3 = dialog.findViewById(R.id.et_code3);
+        final EditText et_code4 = dialog.findViewById(R.id.et_code4);
+        final EditText et_code5 = dialog.findViewById(R.id.et_code5);
+        final EditText et_code6 = dialog.findViewById(R.id.et_code6);
+
+        final EditText et_code7  = dialog.findViewById(R.id.et_code7);
+        final EditText et_code8  = dialog.findViewById(R.id.et_code8);
+        final EditText et_code9  = dialog.findViewById(R.id.et_code9);
+        final EditText et_code10 = dialog.findViewById(R.id.et_code10);
+        final EditText et_code11 = dialog.findViewById(R.id.et_code11);
+        final EditText et_code12 = dialog.findViewById(R.id.et_code12);
+
+        et_code7.requestFocus();
+        et_code7.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editedFlag){
+                    if(editable.length() >= 1){
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code7.setText(Character.toString(character));
+                    } else {
+                        et_code7.setTextColor(Color.WHITE);
+                        et_code7.setBackgroundResource(R.drawable.code_circle);
+                    }
+                } else{
+                    editedFlag = false;
+                    et_code7.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code7.setBackgroundResource(R.drawable.code_circle_selected);
+                    et_code8.requestFocus();
+                }
+            }
+        });
+        et_code8.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if (!editedFlag) {
+                    if (editable.length() >= 1) {
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code8.setText(Character.toString(character));
+                    } else {
+                        et_code8.setTextColor(Color.WHITE);
+                        et_code8.setBackgroundResource(R.drawable.code_circle);
+                        et_code7.requestFocus();
+                    }
+                } else {
+                    editedFlag = false;
+                    et_code8.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code8.setBackgroundResource(R.drawable.code_circle_selected);
+                    et_code9.requestFocus();
+                }
+            }
+        });
+        et_code9.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editedFlag){
+                    if(editable.length() >= 1){
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code9.setText(Character.toString(character));
+                    } else {
+                        et_code9.setTextColor(Color.WHITE);
+                        et_code9.setBackgroundResource(R.drawable.code_circle);
+                        et_code8.requestFocus();
+                    }
+                } else{
+                    editedFlag = false;
+                    et_code9.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code9.setBackgroundResource(R.drawable.code_circle_selected);
+                    et_code10.requestFocus();
+                }
+            }
+        });
+        et_code10.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editedFlag){
+                    if(editable.length() >= 1){
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code10.setText(Character.toString(character));
+                    } else {
+                        et_code10.setTextColor(Color.WHITE);
+                        et_code10.setBackgroundResource(R.drawable.code_circle);
+                        et_code9.requestFocus();
+                    }
+                } else{
+                    editedFlag = false;
+                    et_code10.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code10.setBackgroundResource(R.drawable.code_circle_selected);
+                    et_code11.requestFocus();
+                }
+            }
+        });
+        et_code11.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editedFlag){
+                    if(editable.length() >= 1){
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code11.setText(Character.toString(character));
+                    } else {
+                        et_code11.setTextColor(Color.WHITE);
+                        et_code11.setBackgroundResource(R.drawable.code_circle);
+                        et_code10.requestFocus();
+                    }
+                } else{
+                    editedFlag = false;
+                    et_code11.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code11.setBackgroundResource(R.drawable.code_circle_selected);
+                    et_code12.requestFocus();
+                }
+            }
+        });
+        et_code12.addTextChangedListener(new TextWatcher() {
+            private boolean editedFlag = false;
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) { }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!editedFlag){
+                    if(editable.length() >= 1){
+                        char character = editable.charAt(editable.length() - 1);
+                        editedFlag = true;
+                        et_code12.setText(Character.toString(character));
+                    } else {
+                        et_code12.setTextColor(Color.WHITE);
+                        et_code12.setBackgroundResource(R.drawable.code_circle);
+                        et_code12.requestFocus();
+                    }
+                } else{
+                    editedFlag = false;
+                    et_code12.setTextColor(getResources().getColor(R.color.colorPrimary));
+                    et_code12.setBackgroundResource(R.drawable.code_circle_selected);
+                }
+            }
+        });
 
         LoadAcc();
         ArrayAdapter<String> langAdapter = new ArrayAdapter<>(getApplicationContext(), R.layout.spinner_text_acc, accList);
         langAdapter.setDropDownViewResource(R.layout.simple_spinner_dropdow);
         spnacc.setAdapter(langAdapter);
-        txtcode.setPrefix(accno.get(0) + "-");
+
+        //txtcode.setPrefix(accno.get(0) + "-");
+        if(accno.get(0).length() > 0 && accno.get(0).length() <= 6){
+            //String p6_uid = String.format("%06d", Integer.parseInt(uid));
+            uid = accno.get(0);
+            List et_codeList = new ArrayList<EditText>(){{add(et_code6); add(et_code5); add(et_code4); add(et_code3); add(et_code2); add(et_code1);}};
+
+            for (int i = accno.get(0).length()-1; i >= 0; i--) {
+                ((EditText)et_codeList.get(i)).setText(accno.get(0).charAt(i) + "");
+            }
+        } else {
+            Toast.makeText(getApplicationContext(), "There was a problem getting the User Reference Number", Toast.LENGTH_SHORT).show();
+            dialog.dismiss();
+        }
 
         spnnrole.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -211,7 +414,19 @@ public class SettingsActivity extends AppCompatActivity {
         spnacc.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                txtcode.setPrefix(accno.get(position) + "-");
+                //txtcode.setPrefix(accno.get(position) + "-");
+                if(accno.get(position).length() > 0 && accno.get(position).length() <= 6){
+                    //String p6_uid = String.format("%06d", Integer.parseInt(uid));
+                    uid = accno.get(position);
+                    List et_codeList = new ArrayList<EditText>(){{add(et_code6); add(et_code5); add(et_code4); add(et_code3); add(et_code2); add(et_code1);}};
+
+                    for (int i = accno.get(position).length()-1; i >= 0; i--) {
+                        ((EditText)et_codeList.get(i)).setText(accno.get(position).charAt(i) + "");
+                    }
+                } else {
+                    Toast.makeText(getApplicationContext(), "There was a problem getting the User Reference Number", Toast.LENGTH_SHORT).show();
+                    dialog.dismiss();
+                }
             }
 
             @Override
@@ -220,7 +435,6 @@ public class SettingsActivity extends AppCompatActivity {
             }
         });
 
-
         btnSetCode.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -228,7 +442,15 @@ public class SettingsActivity extends AppCompatActivity {
                 if (selectRole.equals("Admin") && addadmin.equals("false")){
                     Toast.makeText(SettingsActivity.this, "You can't add more admin guest. Please contact us for more.", Toast.LENGTH_SHORT).show();
                 } else if (selectRole.equals("Guest") || (selectRole.equals("Admin") && addadmin.equals("true"))){
-                    String code = txtcode.getText().toString();
+                    //String code = txtcode.getText().toString();
+                    String code = uid +"-"+ et_code7.getText().toString() + et_code8.getText().toString() +
+                            et_code9.getText().toString() + et_code10.getText().toString() +
+                            et_code11.getText().toString() + et_code12.getText().toString();
+                    if (code.length() != 6) {
+                        tv_code.setError("Code in correct.");
+                    } else {
+                        btnSetCode.setText("Setting up ...");
+                    }
                     String data = null;
                     try {
                         data = URLEncoder.encode("c","UTF-8") + "=" + URLEncoder.encode(code, "UTF-8") + "&" +
@@ -236,12 +458,10 @@ public class SettingsActivity extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
-                    new SettingsActivity.UpdateCode(SettingsActivity.this, data).execute(getResources().getString(R.string.url) + "setguestcode.php?"+data);
+                    new SettingsActivity.UpdateCode(SettingsActivity.this, data).execute(getResources().getString(R.string.dssoft_url) + "giams/includes/SafeHome/setguestcode.php?"+data);
                 }
             }
         });
-
-
 
         dialog.show();
     }
@@ -386,8 +606,8 @@ public class SettingsActivity extends AppCompatActivity {
                 if(jsonResult.getBoolean("codeupdate")){
                     activity.dialog.dismiss();
                     Toast.makeText(activity.getApplicationContext(), "Code set succesfully.", Toast.LENGTH_LONG).show();
-
                 } else {
+                    activity.btnSetCode.setText("Set up");
                     if (jsonResult.getString("cause").equals("cantidad")){
                         Toast.makeText(activity.getApplicationContext(), "You can't add more guest. Please, for more, contact us.", Toast.LENGTH_LONG).show();
                     } else {
@@ -396,7 +616,10 @@ public class SettingsActivity extends AppCompatActivity {
                 }
             } catch (JSONException e) {
                 e.printStackTrace();
+                activity.btnSetCode.setText("Set up");
                 Toast.makeText(activity.getApplicationContext(), "There is some problem with the server. Please try again in a few minutes.", Toast.LENGTH_LONG).show();
+
+                activity.dialog.dismiss();
             }
         }
     }

@@ -181,4 +181,6 @@ public class EventListActivity extends AppCompatActivity {
             listView.setAdapter(adapter);
         }
     };
+
+
 }

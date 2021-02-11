@@ -4,7 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@drawable/splashbackground1"
     android:gravity="center_horizontal"
     android:orientation="vertical"
@@ -15,6 +14,7 @@
     tools:context="com.divinesecurity.safehouse.registerPackage.RegisterActivity">
 
     <ImageView
+        android:id="@+id/iv_logo"
         android:layout_width="240dp"
         android:layout_height="120dp"
         android:layout_gravity="center_horizontal"
@@ -42,7 +42,7 @@
             android:layout_height="match_parent"
             android:gravity="center_horizontal"
             android:orientation="vertical">
-
+            <!--
             <LinearLayout
                 android:layout_width="260dp"
                 android:layout_height="50dp"
@@ -104,23 +104,236 @@
                     android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
+            -->
 
-            <EditText
-                android:id="@+id/editCode"
-                android:layout_width="260dp"
-                android:layout_height="50dp"
-                android:layout_marginTop="25dp"
-                android:background="@drawable/button_rounded_corner"
-                android:drawableLeft="@drawable/penciledit"
-                android:ems="10"
-                android:gravity="fill_vertical|center_horizontal"
-                android:hint="Code"
-                android:inputType="number"
-                android:maxLines="1"
-                android:textColor="@android:color/white"
-                android:textColorHint="#fff"
-                android:textStyle="bold"
-                android:drawableStart="@drawable/penciledit" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="vertical"
+                android:padding="8dp">
+
+                <TextView
+                    android:id="@+id/tv_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Code"
+                    android:textAlignment="center"
+                    android:textColor="#FFFFFF"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    tools:text="Code" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal">
+
+                    <EditText
+                        android:id="@+id/et_code1"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr‌​stuvwxyz0123456789"
+                        android:ems="10"
+                        android:inputType="text|textCapWords"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code2"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:digits="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqr‌​stuvwxyz0123456789"
+                        android:ems="10"
+                        android:inputType="text|textCapWords"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code3"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code4"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code5"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code6"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/ll_code"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_horizontal"
+                    android:orientation="horizontal"
+                    android:visibility="gone">
+
+                    <EditText
+                        android:id="@+id/et_code7"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code8"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code9"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code10"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code11"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                    <EditText
+                        android:id="@+id/et_code12"
+                        android:layout_width="40dp"
+                        android:layout_height="40dp"
+                        android:layout_margin="3dp"
+                        android:background="@drawable/code_circle"
+                        android:ems="10"
+                        android:inputType="numberDecimal"
+                        android:maxLength="1"
+                        android:selectAllOnFocus="true"
+                        android:singleLine="true"
+                        android:textAlignment="center"
+                        android:textAllCaps="true"
+                        android:textColor="#FFFFFF"
+                        android:textStyle="bold" />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <EditText
                 android:id="@+id/editUser"

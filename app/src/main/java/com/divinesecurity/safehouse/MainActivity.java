@@ -44,16 +44,17 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
+import com.bumptech.glide.Glide;
 import com.divinesecurity.safehouse.accountPackage.AccountsListActivity;
 import com.divinesecurity.safehouse.alarmPackage.EventListActivity;
 import com.divinesecurity.safehouse.dbAdapterPackage.MyDataBaseAdapter;
+import com.divinesecurity.safehouse.emergencyPackage.EmergencyListActivity;
 import com.divinesecurity.safehouse.guestPackage.GuestListActivity;
 import com.divinesecurity.safehouse.invoicePackage.InvoiceListActivity;
 import com.divinesecurity.safehouse.pdfPackage.TemplatePDF;
 import com.divinesecurity.safehouse.settingsPackage.SettingsActivity;
 import com.divinesecurity.safehouse.toolsPackage.Tools;
 import com.divinesecurity.safehouse.zonePackage.ZoneListActivity;
-
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.PendingResult;
@@ -65,7 +66,6 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.location.LocationSettingsRequest;
 import com.google.android.gms.location.LocationSettingsStatusCodes;
-
 import com.google.android.material.navigation.NavigationView;
 import com.nex3z.notificationbadge.NotificationBadge;
 
@@ -86,12 +86,12 @@ public class MainActivity extends AppCompatActivity
     NavigationView navigationView = null;
 
     Animation animationZoom;
-    NotificationBadge invnBadge, alarmnBadge;
+    NotificationBadge invnBadge, alarmnBadge, emergencyBadge;
 
     private String[] header = {"Item", "Quantity", "Description", "Rate", "SubTotal"};
     private TemplatePDF templatePDF;
 
-    int invbdge, alarmbdge;
+    int invbdge, alarmbdge, emebdge;
 
     MyDataBaseAdapter dataBaseAdapter;
 
@@ -99,6 +99,7 @@ public class MainActivity extends AppCompatActivity
     String urole, upanel;
 
     String username, accnoSel;
+    String compLogo;
 
     //Buy
     Animation animationIn, animationOut;
@@ -142,14 +143,18 @@ public class MainActivity extends AppCompatActivity
 
         invnBadge   = findViewById(R.id.ibadge);
         alarmnBadge = findViewById(R.id.abadge);
+        emergencyBadge = findViewById(R.id.ebadge);
 
         SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-        accnoSel            = mypreference.getString("paccountNo", "");
-        username            = mypreference.getString("puser", "");
-        urole               = mypreference.getString("prole", "");
-        upanel              = mypreference.getString("ppanel", "");
-        String invoiceBagde = mypreference.getString("pinvbadge", "");
-        String alarmBagde   = mypreference.getString("palarmbadge", "");
+        accnoSel               = mypreference.getString("paccountNo", "");
+        username               = mypreference.getString("puser", "");
+        urole                  = mypreference.getString("prole", "");
+        upanel                 = mypreference.getString("ppanel", "");
+        String invoiceBagde    = mypreference.getString("pinvbadge", "");
+        String alarmBagde      = mypreference.getString("palarmbadge", "");
+        String emergBagde      = mypreference.getString("pemergbadge", "");
+        compLogo               = mypreference.getString("plogo", "");
+
         if (invoiceBagde != null && invoiceBagde.equals("")) {
             invoiceBagde = "0";
         }
@@ -161,6 +166,12 @@ public class MainActivity extends AppCompatActivity
         }
         alarmbdge = Integer.parseInt(alarmBagde != null ? alarmBagde : "0");
         alarmnBadge.setNumber(alarmbdge);
+
+        if (emergBagde != null && emergBagde.equals("")) {
+            emergBagde = "0";
+        }
+        emebdge = Integer.parseInt(emergBagde != null ? emergBagde : "0");
+        emergencyBadge.setNumber(emebdge);
 
 
         View hView =  navigationView.getHeaderView(0);
@@ -261,8 +272,40 @@ public class MainActivity extends AppCompatActivity
             }
         });
 
+        Glide.with(this)
+                .load("http://www.divinesecuritysoftware.com/resources/images/profiles/companies/" + compLogo)
+                .placeholder(R.drawable.shieldlogo)
+                //.apply(new RequestOptions().override(500, 500))
+                .fitCenter()
+                .centerCrop()
+                //.override(200,200)
+                .into(imlogo);
+
+                /*.thumbnail(0.5f)
+
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .into(new SimpleTarget<GlideDrawable>() {
+                    @Override
+                    public void onResourceReady(GlideDrawable glideDrawable, GlideAnimation<? super GlideDrawable> glideAnimation) {
+                        apd_image.setImageDrawable(glideDrawable);
+                        apd_image.setDrawingCacheEnabled(true);
+                        saveImage();
+                    }});*/
+
         setUpGClient();
     }
+
+   /* @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        registerReceiver(mMessageReceiver, new IntentFilter("broad-main"));
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(mMessageReceiver);
+    }*/
 
     @Override
     public void onPause() {
@@ -312,9 +355,10 @@ public class MainActivity extends AppCompatActivity
     }
 
 
-    public void store(View view) {
+    public void emergency(View view) {
         view.startAnimation(animationZoom);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.dsag_url)));
+        //Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.dsag_url)));
+        Intent intent = new Intent(this, EmergencyListActivity.class);
         startActivity(intent);
     }
 
@@ -429,11 +473,6 @@ public class MainActivity extends AppCompatActivity
         return rows;
     }
 
-    public void shoplink(View view) {
-        view.startAnimation(animationZoom);
-        Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(getResources().getString(R.string.dsag_url)));
-        startActivity(intent);
-    }
 
     public void lay_armdis(View view) {
         layoutBuyContent.startAnimation(animationOut);
@@ -453,31 +492,45 @@ public class MainActivity extends AppCompatActivity
             // Get extra data included in the Intent
             String ptype = intent.getStringExtra("pType");
 
-            if (ptype.equals("alarm")) {
-                SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = mypreference.edit();
-                String alarmBagde = mypreference.getString("palarmbadge", "");
-                if (alarmBagde != null && alarmBagde.equals("")) {
-                    alarmBagde = "0";
+            SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
+            SharedPreferences.Editor editor = mypreference.edit();
+
+            switch (ptype) {
+                case "alarm": {
+                    String alarmBagde = mypreference.getString("palarmbadge", "");
+                    if (alarmBagde != null && alarmBagde.equals("")) {
+                        alarmBagde = "0";
+                    }
+                    int bdge = Integer.parseInt(alarmBagde != null ? alarmBagde : "0");
+                    bdge++;
+                    editor.putString("palarmbadge", "" + bdge);
+                    alarmnBadge.setNumber(bdge);
+                    break;
                 }
-                int bdge = Integer.parseInt(alarmBagde != null ? alarmBagde : "0");
-                bdge++;
-                editor.putString("palarmbadge", ""+bdge);
-                editor.apply();
-                alarmnBadge.setNumber(bdge);
-            } else if (ptype.equals("invoice")) {
-                SharedPreferences mypreference = getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = mypreference.edit();
-                String invBagde = mypreference.getString("pinvbadge", "");
-                if (invBagde != null && invBagde.equals("")) {
-                    invBagde = "0";
+                case "invoice": {
+                    String invBagde = mypreference.getString("pinvbadge", "");
+                    if (invBagde != null && invBagde.equals("")) {
+                        invBagde = "0";
+                    }
+                    int bdge = Integer.parseInt(invBagde != null ? invBagde : "0");
+                    bdge++;
+                    editor.putString("pinvbadge", "" + bdge);
+                    invnBadge.setNumber(bdge);
+                    break;
                 }
-                int bdge = Integer.parseInt(invBagde != null ? invBagde : "0");
-                bdge++;
-                editor.putString("pinvbadge", ""+bdge);
-                editor.apply();
-                invnBadge.setNumber(bdge);
+                case "emergency": {
+                    String emergencyBagde = mypreference.getString("pemergbadge", "");
+                    if (emergencyBagde != null && emergencyBagde.equals("")) {
+                        emergencyBagde = "0";
+                    }
+                    int bdge = Integer.parseInt(emergencyBagde != null ? emergencyBagde : "0");
+                    bdge++;
+                    editor.putString("pemergbadge", "" + bdge);
+                    emergencyBadge.setNumber(bdge);
+                    break;
+                }
             }
+            editor.apply();
         }
     };
 
@@ -562,7 +615,7 @@ public class MainActivity extends AppCompatActivity
                 } catch (UnsupportedEncodingException e) {
                     e.printStackTrace();
                 }
-                new SendEmergency(MainActivity.this).execute(getResources().getString(R.string.dssoft_url) + "SafeHome/eregistro.php?" + data);
+                new SendEmergency(MainActivity.this).execute(getResources().getString(R.string.dssoft_url) + "giams/includes/SafeHome/eregistro.php?" + data);
             }
         }.start();
     }

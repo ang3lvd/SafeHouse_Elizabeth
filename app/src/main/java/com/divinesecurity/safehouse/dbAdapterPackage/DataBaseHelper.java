@@ -11,7 +11,7 @@ import android.database.sqlite.SQLiteOpenHelper;
 public class DataBaseHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_NAME = "divseccapp_db.db";
-    private static final int DATABASE_VERSION = 2;
+    private static final int DATABASE_VERSION = 3;
 
     DataBaseHelper(Context context)
     {
@@ -31,6 +31,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL(MyDataBaseAdapter.DATABASE_CREATE_Z);
         db.execSQL(MyDataBaseAdapter.DATABASE_CREATE_G);
         db.execSQL(MyDataBaseAdapter.DATABASE_CREATE_ACC);
+        db.execSQL(MyDataBaseAdapter.DATABASE_CREATE_E);
     }
 
     @Override
@@ -40,6 +41,7 @@ public class DataBaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + MyDataBaseAdapter.Z_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MyDataBaseAdapter.G_TABLE_NAME);
         db.execSQL("DROP TABLE IF EXISTS " + MyDataBaseAdapter.ACC_TABLE_NAME);
+        db.execSQL("DROP TABLE IF EXISTS " + MyDataBaseAdapter.E_TABLE_NAME);
         onCreate(db);
     }
 }
