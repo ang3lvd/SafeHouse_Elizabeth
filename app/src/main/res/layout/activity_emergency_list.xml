@@ -47,7 +47,7 @@
             android:id="@+id/list_emergency"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/white"
+            android:divider="@color/quantum_white_100"
             android:dividerHeight="8dp"
             android:padding="8dp"
             tools:listitem="@layout/item_emergency" />

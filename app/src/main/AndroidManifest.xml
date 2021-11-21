@@ -50,7 +50,9 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/map_key" />
 
-        <service android:name=".firebasePackage.MyFirebaseMessagingService">
+        <service
+            android:name=".firebasePackage.MyFirebaseMessagingService"
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>

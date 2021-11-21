@@ -36,8 +36,9 @@ import com.divinesecurity.safehouse.toolsPackage.Tools;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.libraries.places.api.Places;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
+//import com.google.firebase.iid.FirebaseInstanceIdReceiver;
+//import com.google.firebase.iid.FirebaseInstanceId;
+//import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessaging;
 
 import org.json.JSONArray;
@@ -126,6 +127,7 @@ public class RegisterActivity extends AppCompatActivity {
             }
         });
 
+        /*
         FirebaseMessaging.getInstance().subscribeToTopic("test");
         FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
             @Override
@@ -133,7 +135,22 @@ public class RegisterActivity extends AppCompatActivity {
                 if (task.getResult() != null)
                     mToken = task.getResult().getToken();
             }
-        });
+        });*/
+
+        FirebaseMessaging.getInstance().getToken()
+                .addOnCompleteListener(new OnCompleteListener<String>() {
+                    @Override
+                    public void onComplete(@NonNull Task<String> task) {
+                        if (!task.isSuccessful()) {
+                            //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                            return;
+                        }
+
+                        // Get new FCM registration token
+                        if (task.getResult() != null)
+                            mToken = task.getResult();
+                    }
+                });
 
         // Setup Places Client
         if (!Places.isInitialized()) {
@@ -618,11 +635,12 @@ public class RegisterActivity extends AppCompatActivity {
         };
     }*/
 
+    //Register btn
     public void signup(View view) {
 
-        if (checkFields()) {
-            if(Tools.checkConnectivity(getApplicationContext())) {
-                if (!mToken.equals("")) {
+        if (checkFields()) { //If fields are correct
+            if(Tools.checkConnectivity(getApplicationContext())) {//There is connectivity
+                if (!mToken.equals("")) { //Token is not empty
                     uref_code = et_code1.getText().toString() + et_code2.getText().toString() + et_code3.getText().toString() + et_code4.getText().toString() + et_code5.getText().toString() + et_code6.getText().toString();
                     ucode     = et_code7.getText().toString() + et_code8.getText().toString() + et_code9.getText().toString() + et_code10.getText().toString() + et_code11.getText().toString() + et_code12.getText().toString();
                     uname = txtusern.getText().toString();
@@ -631,6 +649,7 @@ public class RegisterActivity extends AppCompatActivity {
                     uemail = txtemail.getText().toString();
                     urole = spnnRole.getSelectedItem().toString();
 
+                    //Create url string with parameters
                     String data = null;
                     try {
                         data = URLEncoder.encode("c", "UTF-8") + "=" + URLEncoder.encode(ucode, "UTF-8") + "&" +
@@ -644,15 +663,23 @@ public class RegisterActivity extends AppCompatActivity {
                     } catch (UnsupportedEncodingException e) {
                         e.printStackTrace();
                     }
+                    //Call UserRegister for saving info in the cloud
                     new UserRegister(this, data).execute(getResources().getString(R.string.dssoft_url) + "giams/includes/SafeHome/uregisterapp.php?" + data);
                 } else {
-                    FirebaseInstanceId.getInstance().getInstanceId().addOnCompleteListener(new OnCompleteListener<InstanceIdResult>() {
-                        @Override
-                        public void onComplete(@NonNull Task<InstanceIdResult> task) {
-                            if (task.getResult() != null)
-                                mToken = task.getResult().getToken();
-                        }
-                    });
+                    FirebaseMessaging.getInstance().getToken()
+                            .addOnCompleteListener(new OnCompleteListener<String>() {
+                                @Override
+                                public void onComplete(@NonNull Task<String> task) {
+                                    if (!task.isSuccessful()) {
+                                        //Log.w(TAG, "Fetching FCM registration token failed", task.getException());
+                                        return;
+                                    }
+
+                                    // Get new FCM registration token
+                                    if (task.getResult() != null)
+                                        mToken = task.getResult();
+                                }
+                            });
                     Toast.makeText(getApplicationContext(), "Registration Token is not ready yet. Please try again.", Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -694,18 +721,19 @@ public class RegisterActivity extends AppCompatActivity {
 
                     String accno = null, logo = null;
 
+                    //Save info received from the cloud
                     SharedPreferences mypreferences = activity.getSharedPreferences("UserPreference", Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = mypreferences.edit();
 
-                    editor.putString("puser", activity.uname);
-                    editor.putString("ppassw", activity.upassw);
-                    editor.putString("pspassw", activity.uspassw);
-                    editor.putString("prole", activity.urole);
-                    editor.putString("puserstatus", "active");
+                    editor.putString("puser", activity.uname); //username
+                    editor.putString("ppassw", activity.upassw);//user password
+                    editor.putString("pspassw", activity.uspassw);//user stress password
+                    editor.putString("prole", activity.urole);//user role
+                    editor.putString("puserstatus", "active"); //user status
                     editor.putString("ppanel", "none");
                     editor.putString("padmin", "true"); //puede agregar     false: full
 
-                    editor.putString("ptoken", activity.mToken);
+                    editor.putString("ptoken", activity.mToken); //token
 
                     editor.putString("pinvbadge", "0");
                     editor.putString("palarmbadge", "0");

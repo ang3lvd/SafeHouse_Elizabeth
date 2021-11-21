@@ -7,4 +7,7 @@
 
     <color name="AlarmListcolorPrimary">#607d8b</color>
     <color name="GuestListcolorPrimary">#1691cc</color>
+
+
+    <color name="redColor">#E31414</color>
 </resources>

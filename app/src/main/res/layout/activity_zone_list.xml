@@ -48,7 +48,7 @@
             android:id="@+id/list_zone"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:divider="@color/white"
+            android:divider="@android:color/white"
             android:dividerHeight="8dp"
             android:padding="8dp"
             tools:listitem="@layout/item_zone" />

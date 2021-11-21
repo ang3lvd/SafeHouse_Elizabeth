@@ -13,8 +13,9 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.fragment.app.Fragment;
 
-import com.craftman.cardform.Card;
+/*import com.craftman.cardform.Card;
 import com.craftman.cardform.OnPayBtnClickListner;
+ */
 import com.divinesecurity.safehouse.R;
 
 
@@ -26,6 +27,7 @@ public class CardInfoFragment extends Fragment {
 
         final View fragmentView = inflater.inflate(R.layout.fragment_card_info, container, false);
 
+        /*
         final com.craftman.cardform.CardForm cardForm = fragmentView.findViewById(R.id.cardform);
         TextView txtDes = fragmentView.findViewById(R.id.payment_amount);
         Button btnPay = fragmentView.findViewById(R.id.btn_pay);
@@ -35,6 +37,9 @@ public class CardInfoFragment extends Fragment {
 
         btnPay.setText("Save Info");
 
+        */
+
+        /*
         cardForm.setPayBtnClickListner(new OnPayBtnClickListner() {
             @Override
             public void onClick(Card card) {
@@ -73,7 +78,7 @@ public class CardInfoFragment extends Fragment {
                     toast.show();
                 }
             }
-        });
+        });*/
 
 
         // Inflate the layout for this fragment

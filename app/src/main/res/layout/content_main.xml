@@ -56,10 +56,10 @@
             android:layout_marginStart="-16dp"
             android:layout_marginTop="-8dp"
             android:layout_toEndOf="@+id/ll_alarmas"
-            app:badgeBackground="@drawable/badge_bg_with_shadow"
-            app:maxTextLength="2" />
+            app:nbMaxTextLength="2"
+            app:nbBackground="@drawable/badge_bg_with_shadow"/>
     </RelativeLayout>
-
+    <!--app:maxTextLength="2" -->
     <RelativeLayout
         android:id="@+id/rl_invoice"
         android:layout_width="match_parent"
@@ -107,8 +107,8 @@
             android:layout_marginTop="-8dp"
             android:layout_marginEnd="-16dp"
             android:layout_toStartOf="@+id/ll_invoices"
-            app:badgeBackground="@drawable/badge_bg_with_shadow"
-            app:maxTextLength="2" />
+            app:nbBackground="@drawable/badge_bg_with_shadow"
+            app:nbMaxTextLength="2" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -158,8 +158,8 @@
             android:layout_marginTop="-8dp"
             android:layout_marginEnd="-16dp"
             android:layout_toStartOf="@+id/ll_emergencies"
-            app:badgeBackground="@drawable/badge_bg_with_shadow"
-            app:maxTextLength="2" />
+            app:nbBackground="@drawable/badge_bg_with_shadow"
+            app:nbMaxTextLength="2" />
     </RelativeLayout>
 
     <RelativeLayout
